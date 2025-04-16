@@ -1,0 +1,52 @@
+{% if is_paginated %}
+{% for antibody in antibodies_page %}
+    <p>{{ antibody.name }} - {{ antibody.sequence }}</p>
+{% endfor %}
+
+<!-- 分页按钮 -->
+<div class="pagination">
+    <span class="step-links">
+        {% if antibodies_page.has_previous %}
+            <a href="?query={{ query }}&page=1">&laquo; 第一页</a>
+            <a href="?query={{ query }}&page={{ antibodies_page.previous_page_number }}">上一页</a>
+        {% endif %}
+
+        <span class="current">
+            第 {{ antibodies_page.number }} 页，共 {{ antibodies_page.paginator.num_pages }} 页
+        </span>
+
+        {% if antibodies_page.has_next %}
+            <a href="?query={{ query }}&page={{ antibodies_page.next_page_number }}">下一页</a>
+            <a href="?query={{ query }}&page={{ antibodies_page.paginator.num_pages }}">最后一页 &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+<div class="text-center pagination" style="width: 100%">
+  <ul>
+    {% if antibodies_page.has_previous %}
+      <li><a href="?{{ antibodies_page.previous_page_number.querystring }}"
+             class="prev">&lsaquo;&lsaquo; </a></li>
+    {% else %}
+      <li><span class="disabled prev">&lsaquo;&lsaquo; </span></li>
+    {% endif %}
+    {% for page in antibodies_page.pages %}
+      {% if page %}
+        {% ifequal page antibodies_page.number %}
+          <li class="current"><a href="#">{{ page }}</a></li>
+        {% else %}
+          <li><a href="?{{ page.querystring }}" class="page">{{ page }}</a></li>
+        {% endifequal %}
+      {% else %}
+        ...
+      {% endif %}
+    {% endfor %}
+    {% if antibodies_page.has_next %}
+      <li><a href="?{{ antibodies_page.next_page_number.querystring }}" class="next"> &rsaquo;&rsaquo;</a>
+      </li>
+    {% else %}
+      <li><span class="disabled next"> &rsaquo;&rsaquo;</span></li>
+    {% endif %}
+  </ul>
+</div>
+{% endif is_paginated%}

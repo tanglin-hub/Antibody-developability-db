@@ -1,0 +1,407 @@
+/* General Reset */
+* {
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+    
+  }
+  
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: #333333;
+  display: grid;
+}
+
+
+
+header {
+  background-color: #ffffff;
+  color: hsl(0, 0%, 4%);
+  text-align: center;
+}
+
+.header-container h1 {
+  margin-bottom: 10px;
+}
+  
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 10px;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.search-dropdown {
+    margin-right: 0;
+}
+
+.search-dropdown-select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px 0 0 8px;
+    border: 1px solid #003366;
+    outline: none;
+    margin-right: 0; 
+    height: 50px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.search-input {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #003366;
+  width: 400px;
+  margin-right: 0; 
+  height: 50px;
+  transition: border 0.3s ease; 
+}
+
+.search-btn {
+    background-color: #003366;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    margin-left: 0;
+    border-radius: 0 8px 8px 0;
+    transition: border 0.3s; 
+   
+}
+
+.search-input:focus {
+    border-color: white; /* 点击时，输入框边框变为白色 */
+    outline: none;  /* 移除默认的蓝色边框 */
+}
+
+.search-btn:hover,
+.search-btn:focus {
+    border-color: white;  /* 鼠标悬停时和点击时，按钮边框变为白色 */
+}
+
+.search-btn:hover {
+    background-color: #003366;
+}
+
+.search-form button {
+  padding: 10px 20px;
+  margin-left: 10px;
+  border: none;
+  background-color: #224585;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+
+  main {
+    padding: 0;
+    background-color: #f4f9fc;
+  }
+                                                                                                                                                                                                     
+  
+  
+  .feedback {
+    text-align: center;
+  }
+  
+  .feedback h2 {
+    margin-bottom: 10px;
+  }
+  
+  .feedback form {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .feedback input,
+  .feedback textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: Arial, sans-serif; /* 设置相同的字体 */
+    font-size: 16px; /* 设置字体大小 */
+    line-height: 1.5; /* 设置行高 */
+    color: #333; /* 设置字体颜色 */
+  }
+  
+  .feedback button {
+    padding: 10px 20px;
+    border: none;
+    background-color: hsl(216, 87%, 41%);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .feedback button:hover {
+    background-color: #003366;
+  }
+  
+  footer {
+    text-align: center;
+    background-color: hsl(211, 41%, 41%);
+    color: white;
+    padding: 10px 0;
+  }
+  
+  footer p {
+    font-size: 14px;
+    margin: 0;
+  }
+ 
+.navbar-form input {
+    border: none !important;
+}
+
+.badge {
+    font-weight: 500;
+}
+
+blockquote {
+    margin: 20px 0 20px;
+    padding: 30px;
+}
+
+button {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.full {
+    float: left;
+    width: 100%;
+}
+
+.layout_padding {
+    padding-top: 90px;
+    padding-bottom: 0px;
+    display: flex;
+}
+
+.header_section {
+    width: 100%;
+    float: left;
+    background-image: url(../images/banner-bg.png);
+    height: auto;
+    background-size: 100%;
+    padding: 10px 0px 25px 0px;
+    background-repeat: no-repeat;
+}
+
+.navbar-brand {
+    font-size: 28px;
+    color: #074d76;
+    height: auto;
+    float: left;
+}
+
+
+.bg-light {
+    background-color: hsl(185, 26%, 71%);
+}
+
+.navbar-form input {
+    border: none !important;
+}
+
+.navbar-expand-lg .navbar-nav .nav-link {
+    padding-right: 15px;
+    padding-left: 15px;
+    color: #272a2a;
+    font-size: 24px;
+}
+
+
+.navbar {
+    background-color: hsl(0, 0%, 100%); /* 设置导航栏背景色 */
+    border-bottom: 2px solid hsl(0, 0%, 0%); /* 添加分隔线 */
+    padding: .5rem 10px;
+    font-size: 16px;
+    color: #333; /* 导航项颜色 */
+    font-weight: bold;
+    transition: color 0.3s;
+    color: #15e4d0;
+}
+
+.nav-link {
+  display: block;
+  padding: 0.5rem 0.5rem;
+  font-size: 24px;
+}
+
+.nav-fill .nav-item {
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+.navbar ul {
+  display: flex; /* 使用 Flexbox 布局 */
+  justify-content: flex-end; 
+  align-items: center; /* 垂直方向居中 */
+  list-style: none; /* 移除默认列表样式 */
+  padding: 0;
+  margin: 0;
+}
+
+
+.navbar ul li {
+  margin: 0 15px; /* 每个导航项左右间距 */
+}
+
+.navbar ul li a {
+  text-decoration: none; /* 去掉下划线 */
+  color: #0073b7; /* 设置字体颜色 */
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.navbar ul li a:hover {
+  color: #13b921; /* 悬停时颜色变化 */
+}
+
+.search-section {
+  margin-top: 0;
+  background: url('/static/blog/images/antibody.png') no-repeat center center/cover; /* 替换为实际背景图片 */
+  background-size: cover;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  height: 50vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: hwb(0 4% 96%);
+}
+
+.search-overlay {
+  background: #85bdd89a; /* 添加半透明背景遮罩 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+ }
+
+ .search-content {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+  color: white;
+  text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);
+
+  }
+
+
+.search-box button {
+  height: 50px; /* 提高按钮高度 */
+  font-size: 1.2rem;
+}
+
+
+.introduction p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+  margin: 20px 0;
+}
+
+.introduction a {
+  color: #551A8B;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.introduction a:hover {
+  text-decoration: underline;
+  color: #FF4500;
+}
+
+.about-database h2 {
+  font-size: 28px; /* 标题字体大小 */
+  font-weight: bold; /* 标题字体加粗 */
+  color: #333; /* 深灰色字体 */
+  margin-bottom: 20px; /* 标题与正文间距 */
+}
+
+.about-database p {
+  font-size: 20px; /* 正文字体大小 */
+  line-height: 1.6; /* 行高 */
+  text-align: justify; /* 左右对齐 */
+  color: #555; /* 正文字体颜色 */
+  margin-bottom: 15px; /* 段落间距 */
+}
+
+.custom-table td, .custom-table th {
+    vertical-align: middle;
+    text-align: center; 
+}
+
+.pagination-container {
+    text-align: center;
+    margin: 20px 0;
+    min-height: auto !important;
+}
+
+.pagination-list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 0 !important; 
+    padding-bottom: 1rem;
+}
+
+.pagination-list li {
+    display: inline-block;
+}
+
+.pagination-list a, .pagination-list span {
+    text-decoration: none;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    color: #36608c;
+    border-radius: 5px;
+}
+
+.pagination-list a:hover {
+    background-color: #36608c;
+    color: white;
+}
+
+.pagination-list .current a {
+    background-color: #36608c;
+    color: white;
+    font-weight: bold;
+    border: none;
+}
+
+.pagination-list .disabled span {
+    color: #aaa;
+    border: 1px solid #ddd;
+    cursor: not-allowed;
+}
+
+.custom-select {
+        max-width: 140px; /* 控制下拉框宽度 */
+        height: 50px;
+    }

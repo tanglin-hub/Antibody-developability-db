@@ -1,0 +1,101 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block main %}
+
+    <div class="search-section">
+        <div class="search-overly"></div>
+            <div class="container">
+                <div class="row">
+                    <div class="d-flex flex-column justify-content-center align-items-center h-100 mx-auto serch-content">
+                        <h1 class="display-4">Search Antibodies in Our Database</h1>
+                        <p class="lead mb-4">Find validated antibodies, assays, and more.</p>
+                        <div class="search-container">
+                            <div>
+                                <form action="{% url 'blog:antibody_search' %}" method="get" class="d-flex w-100">
+                                    <div class="search-dropdown">
+                                        <select name="category" id="category" class="search-dropdown-select">
+                                            <option value="name" {% if request.GET.type == "name" %}selected{% endif %}>Name</option>
+                                            <option value="property" {% if request.GET.type == "property" %}selected{% endif %}>Property</option>
+                                        </select>
+                                    </div>
+                                    <div class="search-box">
+                                        <input name="q" type="text" id="search-input" placeholder="Search antibodies by name or property" value="{{ request.GET.q }}" class="search-input">
+                                        <button type="submit" class="search-btn"><i class="fa fa-search"></i> Search</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="example" style="text-align: left; padding-left: 210px; padding-top: 1rem">
+                    <span style="color: #20212B; font-size: 18px;padding:5px;">&nbsp Examples: </span>
+                    <a href="/antibody_search/?q=abituzumab" style="color:#20212B">&nbsp abituzumab &nbsp</a> |
+                    <a href="/antibody_search/?q=Tm%28°C%29&type=property" style="color:#20212B">&nbsp Tm(°C) &nbsp</a> |
+                    <a href="/antibody_search/?q=viscosity&type=property" style="color:#20212B">&nbsp viscosity &nbsp</a>
+                </div>                            
+                    
+            </div>
+        </div>
+    </div>
+    <section class="about-database py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">About Antibody Database</h2>
+            <p class="text-justify">
+                The Antibody Database serves as a groundbreaking resource in the field of antibody drug design, where accurately predicting antibody properties is essential for selecting optimal candidate drugs and enhancing therapeutic efficacy. It compiles experimentally determined physicochemical properties of antibodies, providing invaluable references for antibody drug development.
+            To date, the database has accumulated information on <strong>1,302 antibodies</strong>, including <strong>918 sequences</strong> and <strong>6,772 distinct antibody properties</strong>, supporting the advancement of antibody-based research and drug design.<a href="/about" class="content" style="font-weight: bold;color:rgb(9, 120, 163)">Learn more > </a>
+            </p> 
+         </div>
+    </section>
+    
+{% endblock main %}
+
+{% block toc %}
+
+
+
+
+
+ <!-- Numbers Start -->
+        <div class="facts" data-parallax="scroll">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="facts-item">
+                            <i class="fa fa-bullseye"></i>
+                            <div class="facts-text">
+                                <h3 data-toggle="counter-up">9</h3>
+                                <p>Targets</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="facts-item">
+                            <i class="fa fa-list"></i>
+                            <div class="facts-text">
+                                <h3 data-toggle="counter-up">6055</h3>
+                                <p>Records</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="facts-item">
+                            <i class="fa fa-database"></i>
+                            <div class="facts-text">
+                                <h3 data-toggle="counter-up">3396</h3>
+                                <p>Compounds</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="facts-item">
+                            <i class="fa fa-book" aria-hidden="true"></i>
+                            <div class="facts-text">
+                                <h3 data-toggle="counter-up" class="center">173</h3>
+                                <p>References</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock toc %}

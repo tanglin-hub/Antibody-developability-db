@@ -1,0 +1,84 @@
+<div class="d-flex flex-column justify-content-center align-items-center h-100 mx-auto serch-content">
+    <h1 class="display-4">Search Antibodies in Our Database</h1>
+    <p class="lead mb-4">Find validated antibodies, assays, and more.</p>
+        <div class="search-box d-flex">
+            <form action="{% url 'blog:antibody_search' %}" method="get" class="d-flex w-100">
+                <select name="type" class="form-select search-select">
+                    <option value="name" {% if request.GET.type == "name" %}selected{% endif %}>Name</option>
+                    <option value="property" {% if request.GET.type == "property" %}selected{% endif %}>Property</option>
+                </select>
+                <input name="q" type="text" class="form-control search-input"
+                    placeholder="Search antibodies by name or property" value="{{ request.GET.q }}">
+                <button type="submit" class="btn btn-primary search-btn">Search</button>
+            </form>
+        </div>
+        <div class="example" style="text-align: left !important; padding-top: 1rem">
+            <span style="color: #20212B; font-size: 18px;padding:5px;">&nbsp Examples: </span>
+            <a href="/antibody_search/?q=abituzumab" style="color:#20212B">&nbsp abituzumab &nbsp</a> |
+            <a href="/antibody_search/?q=Tm%28°C%29&type=property" style="color:#20212B">&nbsp Tm(°C) &nbsp</a> |
+            <a href="/antibody_search/?q=viscosity&type=property" style="color:#20212B">&nbsp viscosity &nbsp</a>
+        </div>                            
+</div>
+
+
+.search-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+}
+
+/* 选择框 */
+.search-select {
+    max-width: 120px;
+    flex-shrink: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+/* 输入框 */
+.search-input {
+    flex-grow: 1;
+    min-width: 0;  /* 防止 flex 失效 */
+    border-radius: 0; /* 让输入框和选择框紧贴 */
+    height: auto;
+}
+
+/* 按钮 */
+.search-btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.search-form button {
+  padding: 10px 20px;
+  margin-left: 10px;
+  border: none;
+  background-color: #224585;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+  
+
+
+.search-select .form-select,
+.search-input .form-control,
+.search-btn .btn {
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    transition: all 0.3s ease;
+}
+
+/* 下拉框聚焦样式 */
+.search-select .form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* 按钮悬停效果 */
+.search-btn .btn:hover {
+    filter: brightness(0.9);
+}

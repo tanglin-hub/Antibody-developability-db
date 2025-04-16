@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+
+{% block main %}
+<!--Search form-->
+<form method="get" action="{% url 'blog:antibody_search' %}" class="search-form mx-auto" style="width: 50%; margin: 0 auto; padding-top: 20px;" >
+    <div class="input-group">
+        <input type="text" class="form-control" style=" border-radius: 5px; border: 1px solid rgb(139, 153, 163); " placeholder="Search for an antibody..." name="q" value="{{ query }}">
+        <button class="input-group-append">
+            <i class="fas fa-search" style="font-size: 1.2rem; color: white;"></i>
+        </button><!-- 替换为搜索图标 -->
+        </div>
+    </div>
+</form>
+
+<!-- Search Start -->
+<div class="container" style="height: auto !important; min-height: 622px;">
+    <div class="block" id="information1">
+        <div class="row">
+            <div class="col-lg-12 mx-auto">
+                <div class="card mb-4" style="margin-top:1.5rem">
+                  <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold" style="font-size: 23px">Searching Result</h6>
+                      <a href="?q={{ query }}&type={{ search_type }}&download=true" id="download-btn" class="btn btn-primary" style="background-color: #6c757d; border-color: #6c757d; color: #fff;">
+                        <i class="fas fa-download"></i> Download</a>
+                  </div>
+                    <div class="card-body" style="font-size: 20px; padding-top: 0.7rem">
+                        {% if query %}
+                            <p style="margin-bottom: 10px">
+                                Showing {{ antibodies.count }} result{% if result_is_plural %}s{% endif %} for: <strong>{{ query }}</strong></p>
+                        {% else %}
+                            <p style="margin-bottom: 10px">Please enter a query to search for antibodies.</p>
+                        {% endif %}
+                        {% if antibodies %}
+                            <table class="table table-bordered custom-table align-middle" style="table-layout: fixed;">
+                                <thead>
+                                    <tr>
+                                        <th style="background-color: #d9edf7; text-align: center;padding: 8px;width: 10%;">ID</th></a>
+                                        <th style="background-color: #d9edf7; text-align: center;padding: 8px;width: 15%;">Name</th>
+                                       
+                                        <th style="background-color: #d9edf7; text-align: center;padding: 8px;width: 6%;"> Date</th>
+                                        <th style="background-color: #d9edf7; text-align: center;padding: 8px;">Properties</th>
+                                        <th style="background-color: #d8edf7; text-align: center;padding: 8px;width: 27%;">Reference</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for antibody in antibodies_page.object_list %}
+                                    <tr>
+                                        <td style="padding: 8px;border: 1px solid #ddd;"><a href="{% url 'blog:antibody_detail' antibody.id_db %}">{{ antibody.id_db }}</a></td>
+                                        <td style="padding: 8px;border: 1px solid #ddd;">{{ antibody.name }}</td>
+                                       
+                                        <td style="padding: 8px;border: 1px solid #ddd;">{{ antibody.date }}
+                                        </td>
+                                        <td style="padding: 8px;border: 1px solid #ddd;">
+                                          {% if search_type == "name" %}
+                                            <!-- 按名字搜索时，显示所有性质 -->
+                                            {% for property in antibody.properties %}
+                                                {{ property }}{% if not forloop.last %},{% endif %}<br>
+                                            {% endfor %}
+                                          {% else %}
+                                            {% if query in antibody.property_keys %}
+                                                {% for key, value in antibody.properties.items %}
+                                                  {% if query in key %}
+                                                    {{ key }}: {{ value }}
+                                                  {% endif %}
+                                              
+                                                {% endfor %}
+                                            {% endif %}
+                                          {% endif %}
+                                        </td>
+                                        <td style="padding: 8px;border: 1px solid #ddd;">{{ antibody.reference }}<br><a href="https://doi.org/{{ antibody.doi }}" target="_blank">{{ antibody.doi }}</a></td>
+                                    </tr>
+                                    {% empty %}
+                                        <li>No antibodies found.</li>
+                                    {% endfor %}
+                                    
+                            </table>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Search End -->
+
+
+
+<!-- 分页按钮 -->
+<div class="pagination-container">
+  <ul class="pagination-list" >
+    
+    {% if antibodies_page.has_previous %}
+      <li><a href="?query={{ query }}&page={{ antibodies_page.previous_page_number }}"
+             class="prev">&lsaquo;&lsaquo; </a></li>
+    {% else %}
+      <li><span class="disabled prev">&lsaquo;&lsaquo; </span></li>
+    {% endif %}
+
+    <!-- 首页 -->
+    {% if antibodies_page.number > 3 %}
+      <li><a href="?query={{ query }}&page=1">1</a></li>
+      {% if antibodies_page.number > 4 %}
+        <li><span>...</span></li>
+      {% endif %}
+    {% endif %}
+
+    <!-- 显示当前页的前 2 页和后 2 页 -->
+    {% for page in paginator.page_range %}
+      {% if page >= antibodies_page.number|add:"-2" and page <= antibodies_page.number|add:"2" %}
+        {% if page == antibodies_page.number %}
+          <li class="current"><a href="#">{{ page }}</a></li>
+        {% else %}
+          <li><a href="?query={{ query }}&page={{ page }}">{{ page }}</a></li>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+    <!-- 省略号 + 最后一页 -->
+    {% if antibodies_page.number < paginator.num_pages|add:"-2" %}
+      {% if antibodies_page.number < paginator.num_pages|add:"-3" %}
+        <li><span>...</span></li>
+      {% endif %}
+      <li><a href="?query={{ query }}&page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a></li>
+    {% endif %}
+
+    
+    {% if antibodies_page.has_next %}
+      <li><a href="??query={{ query }}&page={{ antibodies_page.next_page_number }}" class="next"> &rsaquo;&rsaquo;</a>
+      </li>
+    {% else %}
+      <li><span class="disabled next"> &rsaquo;&rsaquo;</span></li>
+    {% endif %}
+  </ul>
+</div>
+
+
+
+{% endblock main %}
