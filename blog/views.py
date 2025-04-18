@@ -102,15 +102,6 @@ def antibody_detail(request,id_db):
     if not os.path.exists(pdb_path):
         os.makedirs(os.path.dirname(pdb_path), exist_ok=True)
 
-        # 调用 igfold.py 生成结构文件
-        igfold_script = r"D:\VScode\test\IgFold\examples\predict_structure.py"
-        command = ["python", igfold_script, "--sequence", sequence_str, "--output", pdb_path]
-        print("COMMAND:", command)
-        print("TYPES:", [type(arg) for arg in command])
-        try:
-            subprocess.run(command, check=True)
-        except subprocess.CalledProcessError as e:
-            print("igfold 报错啦：", e)
     return render(request, 'blog/antibody_detail.html',{
         'antibody':antibody,
         'pdb_url': pdb_url,
