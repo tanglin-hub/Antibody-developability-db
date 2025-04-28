@@ -1,0 +1,14 @@
+# Python 文件
+*.pyc
+*.pyo
+__pycache__/
+
+# Django 静态文件收集
+staticfiles/
+
+# 环境文件
+.env
+*.sqlite3
+
+# VSCode 配置文件（如果用 VSCode）
+.vscode/
