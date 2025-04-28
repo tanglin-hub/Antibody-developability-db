@@ -61,7 +61,7 @@
                                             {% if query in antibody.property_keys %}
                                                 {% for key, value in antibody.properties.items %}
                                                   {% if query in key %}
-                                                    {{ key }}: {{ value }}
+                                                    {{ key }}: {{ value }}<br>
                                                   {% endif %}
                                               
                                                 {% endfor %}
@@ -91,7 +91,7 @@
   <ul class="pagination-list" >
     
     {% if antibodies_page.has_previous %}
-      <li><a href="?query={{ query }}&page={{ antibodies_page.previous_page_number }}"
+      <li><a href="?q={{ query }}&type={{ search_type }}&page={{ antibodies_page.previous_page_number }}"
              class="prev">&lsaquo;&lsaquo; </a></li>
     {% else %}
       <li><span class="disabled prev">&lsaquo;&lsaquo; </span></li>
@@ -99,7 +99,7 @@
 
     <!-- 首页 -->
     {% if antibodies_page.number > 3 %}
-      <li><a href="?query={{ query }}&page=1">1</a></li>
+      <li><a href="?q={{ query }}&type={{ search_type }}&page=1">1</a></li>
       {% if antibodies_page.number > 4 %}
         <li><span>...</span></li>
       {% endif %}
@@ -111,7 +111,7 @@
         {% if page == antibodies_page.number %}
           <li class="current"><a href="#">{{ page }}</a></li>
         {% else %}
-          <li><a href="?query={{ query }}&page={{ page }}">{{ page }}</a></li>
+          <li><a href="?q={{ query }}&type={{ search_type }}&page={{ page }}">{{ page }}</a></li>
         {% endif %}
       {% endif %}
     {% endfor %}
@@ -121,12 +121,12 @@
       {% if antibodies_page.number < paginator.num_pages|add:"-3" %}
         <li><span>...</span></li>
       {% endif %}
-      <li><a href="?query={{ query }}&page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a></li>
+      <li><a href="?q={{ query }}&type={{ search_type }}&page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a></li>
     {% endif %}
 
     
     {% if antibodies_page.has_next %}
-      <li><a href="??query={{ query }}&page={{ antibodies_page.next_page_number }}" class="next"> &rsaquo;&rsaquo;</a>
+      <li><a href="?q={{ query }}&type={{ search_type }}&page={{ antibodies_page.next_page_number }}" class="next"> &rsaquo;&rsaquo;</a>
       </li>
     {% else %}
       <li><span class="disabled next"> &rsaquo;&rsaquo;</span></li>

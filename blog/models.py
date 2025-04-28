@@ -26,11 +26,3 @@ class Antibody(models.Model):
     
     def __str__(self):
         return self.name
-    
-class Feedback(models.Model):
-    email=models.EmailField()
-    content=models.TextField()
-    created_at=models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.email  

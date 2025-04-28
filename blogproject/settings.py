@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '!4gzpwgv(ofl_0nvnxcizgk4$gas##nbckqsx2ivr+o!tbdzuq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['10.71.128.237', '127.0.0.1', 'localhost']
 
@@ -121,6 +121,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'blog', 'static'),  # 原来的 D:\VScode\test\blog\static
+]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

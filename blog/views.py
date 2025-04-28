@@ -1,10 +1,10 @@
 from django.shortcuts import render,get_object_or_404
-from .models import Antibody,Feedback
+from .models import Antibody
 from django.http import JsonResponse,HttpResponse
 import csv,json
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 from .download import download_results
-import os, uuid, subprocess
+import os
 from django.conf import settings
 
 # Create your views here.
@@ -17,6 +17,7 @@ def antibody_search(request):
     result_is_plural = False 
     search_type = request.GET.get('type', 'name')
     download = request.GET.get('download', 'false').lower() == 'true'  # 检查是否是下载请求 
+    
     if query:
         print(f"Query: {query}")
         print(f"Search type: {search_type}") 
@@ -24,12 +25,19 @@ def antibody_search(request):
         if search_type == 'name':
             antibodies = Antibody.objects.filter(name__icontains=query)
             print(f"Searching by name: {query}")
+            
         else:
         # 匹配抗体性质部分（基于 property_keys 字段）
-            antibodies = Antibody.objects.filter(property_keys__icontains=query)
+            all_antibodies = Antibody.objects.all()
+            antibodies = [
+                ab for ab in all_antibodies
+                if ab.properties and any(query.lower() in key.lower() for key in ab.properties.keys())
+            ]
             print(f"Searching by property: {query}")
+            
+
         
-        result_is_plural=antibodies.count() !=1 and 0
+        result_is_plural= len(antibodies) !=1 and 0
         if not antibodies:
             no_results=True
     else:
@@ -53,7 +61,6 @@ def antibody_search(request):
     page = request.GET.get('page', 1)   # 获取页码，默认为 1
     # 创建分页对象，每页显示 30 个抗体
     paginator = Paginator(antibodies, 30)
-
     try:
         # 获取当前页的数据
         antibodies_page = paginator.page(page)
@@ -63,6 +70,9 @@ def antibody_search(request):
     except EmptyPage:
         # 如果页码超出范围，返回最后一页
         antibodies_page = paginator.page(paginator.num_pages)
+
+
+   
 
     return render(request, 'blog/search_result.html', {
         'antibodies':antibodies, 
@@ -92,8 +102,7 @@ def antibody_detail(request,id_db):
     antibody=get_object_or_404(Antibody, id_db=id_db)
     sequence = antibody.sequence
     pdb_url = None
-    sequence_str = antibody.sequence.get('sequence', '')
-    
+ 
     # PDB 结构缓存路径
     pdb_filename = f"{id_db}.pdb"
     pdb_path = os.path.join(settings.MEDIA_ROOT, 'pdb', pdb_filename)
@@ -164,3 +173,4 @@ def check_pdb(request, id_db):
         return HttpResponse(f"PDB file for {id_db} exists.")
     else:
         return HttpResponse(f"PDB file for {id_db} NOT found.")
+    
