@@ -6,6 +6,7 @@ from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 from .download import download_results
 import os
 from django.conf import settings
+from urllib.parse import urljoin
 
 # Create your views here.
 def index(request):
@@ -104,10 +105,9 @@ def antibody_detail(request,id_db):
     pdb_url = None
  
     # PDB 结构缓存路径
-    pdb_filename = f"{id_db}.pdb"
+    pdb_filename = f"{id_db}_tfold_ab.pdb"
     pdb_path = os.path.join(settings.MEDIA_ROOT, 'pdb', pdb_filename)
-    pdb_url = os.path.join(settings.MEDIA_URL, 'pdb', pdb_filename)
-    
+    pdb_url = urljoin(settings.MEDIA_URL, f'pdb/{pdb_filename}')
     if not os.path.exists(pdb_path):
         os.makedirs(os.path.dirname(pdb_path), exist_ok=True)
 
@@ -173,4 +173,6 @@ def check_pdb(request, id_db):
         return HttpResponse(f"PDB file for {id_db} exists.")
     else:
         return HttpResponse(f"PDB file for {id_db} NOT found.")
+    
+
     

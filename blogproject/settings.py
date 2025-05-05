@@ -25,7 +25,7 @@ SECRET_KEY = '!4gzpwgv(ofl_0nvnxcizgk4$gas##nbckqsx2ivr+o!tbdzuq'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.71.128.237', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['10.71.128.237', '127.0.0.1', 'localhost','devoab.com','www.devoab.com',]
 
 
 # Application definition

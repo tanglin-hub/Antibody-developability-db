@@ -81,7 +81,7 @@
                                     defaultcolors: $3Dmol.rasmolElementColors,
                                     backgroundColor: "white"
                                 });
-                                fetch("/media/pdb/test2.pdb")  // 可以换成你当前抗体的实际路径
+                                fetch("{{ pdb_url }}")  // 可以换成你当前抗体的实际路径
                                     .then(response => response.text())
                                     .then(pdbData => {
                                         viewer_simple.addModel(pdbData, "pdb");

@@ -12,3 +12,5 @@ staticfiles/
 
 # VSCode 配置文件（如果用 VSCode）
 .vscode/
+
+_credentials.py
