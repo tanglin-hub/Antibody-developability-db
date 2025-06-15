@@ -1,7 +1,681 @@
 {% extends 'base.html'%}
 
 {% block main %}
+<!-- papers -->
+<div class="container">
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="custom-panel-heading" name="panel_head">What is DevoAb(Develoability Antibody Database)?</div>
+                <div class="panel-body about_content">
+                    <div class="pull-left text-justify">
+                        <p>
+                        <strong>Antibodies</strong> are immunoglobulins secreted by plasma cells transformed from B lymphocytes 
+                        in the immune system of the body under the stimulation of antigens, which can specifically bind to the 
+                        corresponding antigens. It is a very successful type of biopharmaceutical.
+                        </p>
+                        <p>
+                        In 1986, the FDA approved <strong>the first monoclonal antibody (mAb) drug, OKT3</strong>. By May 2021, the FDA 
+                        had approved its 100th antibody drug, and as of <strong>2024</strong>, a record-breaking 13 new antibody drugs were approved 
+                        in a single year, bringing the total number of <strong>approved antibody drugs to 143</strong>.
+                        </p>
+                        <p>
+                        While antibody efficacy and specificity remain primary considerations in drug development, 
+                        <strong>developability</strong> has emerged as a critical factor determining <strong>clinical success</strong>. 
+                        Antibody developability encompasses multiple biophysical properties, including:
+                        </p>
+                        <ul class="p-list">
+                            <li>High expression</li>
+                            <li>High solubility</li>
+                            <li>Covalent integrity</li>
+                            <li>Conformational and colloidal stability</li>
+                            <li>Low polyspecificity</li>
+                            <li>Low immunogenicity</li>
+                        </ul>
+                        <p>
+                        Antibodies with poor developability may encounter significant challenges in later-stage development, 
+                        potentially compromising early-stage progress. Therefore, <strong>predicting antibody developability</strong> based on 
+                        <strong>sequence</strong> analysis and experimentally determined <strong>physicochemical properties</strong> is of great importance.
+                        </p>
+                        <p>
+                        To support this effort, the <strong>DevoAb Database</strong> was established as the first comprehensive repository of 
+                        experimentally validated antibody physicochemical properties. This platform facilitates <strong> storage, retrieval, and analysis</strong>, 
+                        accelerating the development of next-generation antibody therapeutics.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- col -->
+    </div> <!-- row -->
 
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="custom-panel-heading" name="panel_head">What properties included?</div>
+                <div class="panel-body about_content">
+                    <div class="pull-left text-justify">
+                        <p>
+                        DevoAb provides <strong>comprehensive physicochemical properties</strong> data for the assessment of antibody developability, 
+                        all derived from published experimental data. Users can quickly find antibody information 
+                        by searching for names or properties.<strong> Key features include:</strong>
+                        </p>
+                        <ul class="p-list">
+                            <li>Comprehensive Data:<span class="li-desc">Sequences, formats, biophysical properties, and affinity</span></li>
+                            <li>Efficient Search:<span class="li-desc">Query by antibody name or specific properties</span></li>
+                            <li>Enhanced Visualization:<span class="li-desc">Sequence comparison and antibody sequence visualization</span></li>
+                            <li>Standardized Entries:<span class="li-desc">Unique DevoAb_IDs (e.g. AB0001) with species annotation (human/mouse/rabbit/camel) to evaluate immunogenicity risks</span></li>
+                            <li>Cross-Database Integration:<span class="li-desc">PDB ID for structural data and EMBL-GenBank accession numbers for sequence records, all with live links to source entries in their respective databases</span></li>
+                        </ul>
+                        <p>
+                        A sunmmary of the experimental measurements for developability and their description are provided below:
+                        </p><br>
+                
+                        <table class="custom-table">
+                            <thead>
+                              <tr>
+                                <th>Properties</th>
+                                <th>Assay</th>
+                                <th>Description</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="category-cell" rowspan="2">Expression Titer</td>
+                                    <td>HEK Titer(mg/L)</td>
+                                    <td>Human Embryonic Kidney cell-derived antibody Titer</td>
+                                </tr>
+                                <tr class="group-end">
+                                    <td>CHO titer(mg/L)</td>
+                                    <td>Chinese Hamster Ovary Cell Antibody Titer(mg/L)</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="category-cell" rowspan="3">Thermal stability</td>
+                                    <td>Tonset(℃)</td>
+                                    <td>Melting temperatures at the onset of unfolding</td>
+                                </tr>
+                                <tr>
+                                    <td>Tm(℃)</td>
+                                    <td>Melting temperature at the midpoint of the first,second,third transition</td>
+                                </tr>
+                                <tr class="group-end">
+                                    <td>Tagg(℃)</td>
+                                    <td>Temperature of aggregation</td>
+                                </tr>
+
+                                <!-- 分组: Hydrophobicity（2行） -->
+                                <tr>
+                                    <td class="category-cell" rowspan="2">Hydrophobicity</td>
+                                    <td>SMAC</td>
+                                    <td>Standup Monolayer Adsorption</td>
+                                </tr>
+                                <tr class="group-end">
+                                    <td>HIC</td>
+                                    <td>Hydrophobic Interaction Chromatography</td>
+                                </tr>
+                                
+                                <!-- 分组: Self-interaction（3行） -->
+                                <tr>
+                                    <td class="category-cell" rowspan="4">Self-interaction</td>
+                                    <td>AC-SINS</td>
+                                    <td>Affinity-Capture Self-Interaction</td>
+                                </tr>
+                                <tr>
+                                    <td>CS-SINS</td>
+                                    <td>Charged-Stabilized Self-Interaction</td>
+                                </tr>
+                                <tr>
+                                    <td>SGAC-SINS</td>
+                                    <td>Salt-Gradient Affinity Self-Interaction</td>
+                                </tr>
+                                <tr class="group-end">
+                                    <td>CSI-BLI</td>
+                                    <td>Clone self-interaction by bio-layer interferometry</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="category-cell" rowspan="4">Poly specificity</td>
+                                    <td>PSR</td>
+                                    <td>Poly-specificity reagent</td>
+                                </tr>
+                                <tr>
+                                    <td>BVP</td>
+                                    <td>Baculovirus particle</td>
+                                </tr>
+                                <tr>
+                                    <td>CIC</td>
+                                    <td>Cross-interaction chromatography</td>
+                                </tr>
+                                <tr  class="group-end">
+                                    <td>ELISA</td>
+                                    <td>Enzyme-linked immunosorbent assay</td>
+                                </tr>
+                            
+                                <tr>
+                                    <td class="category-cell" rowspan="4">Nonspecific binding</td>
+                                    <td>Hep_RT</td>
+                                    <td>Heparin chromatography Relative Retention Time</td>
+                                </tr>
+                                <tr>
+                                    <td>hFcRn_RT</td>
+                                    <td>Human neonatal Fc receptor chromatography Retention Time</td>
+                                </tr>
+                                <tr>
+                                    <td>Membrane Prep Assay Score, PEI Assay Score</td>
+                                    <td> Membrane Preparation Binding Assay Score</td>
+                                </tr>
+                                <tr class="group-end">
+                                    <td>%Heparin_HpnIP</td>
+                                    <td>Heparin Column Retention Percent</td>
+                                </tr>
+                            
+                                <tr>
+                                    <td class="category-cell" rowspan="3">Conformational Stability</td>
+                                    <td>ICD Chalf (M)CH2 Domain</td>
+                                    <td>Isothermal Chemical Denaturation</td>
+                                </tr>
+                                 <tr>
+                                    <td>D</td>
+                                    <td>Diffusion Coefficient</td>
+                                </tr>
+                                <tr class="group-end">
+                                    <td>DSF_WSS</td>
+                                    <td>Weighted Solubility Score by DSF (accounts for Fab-related peak shift)</td>
+                                </tr>
+                            
+                                <tr class="group-end">
+                                    <td class="category-cell" rowspan="1">Solubility</td>
+                                    <td>PEG%</td>
+                                    <td>PEG-Induced Precipitation</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="category-cell" rowspan="4">Colloidal stability</td>
+                                     <td>ΔHMW Slope (%HMW/week)</td>
+                                    <td>High molecular weight, Storage Stability</td>
+                                </tr>
+                                <tr>
+                                    <td>%HMWS </td>
+                                    <td>The percentage of high molecular weight species by SEC</td>
+                                </tr>
+                                <tr>
+                                    <td>%LMWS</td>
+                                    <td>The percentage of high molecular weight species by SEC</td>
+                                </tr>
+                                <tr class="group-end">
+                                    <td>SEPAX retention time (min)</td>
+                                    <td>Surface Electrostatic Potential and Affinity eXchange retention time</td>
+                                </tr>
+                            
+                                <tr class="group-end">
+                                    <td class="category-cell" rowspan="1">Molecular size</td>
+                                    <td>SEC</td>
+                                    <td>size-exclusion chromatography</td>
+                                </tr>
+                            
+                                <tr>
+                                    <td class="category-cell" rowspan="2">Purity</td>
+                                    <td>Purified Yield(mg/L)</td>
+                                    <td></td>
+                                </tr>
+                                <tr class="group-end">
+                                    <td>Turbidity (OD)</td>
+                                    <td></td>
+                                </tr>
+
+                                <tr class="group-end">
+                                    <td class="category-cell" roespan="1">Viscosity</td>
+                                    <td>Viscosity(cP)</td>
+                                    <td>Different Viscosity at different concentrations</td>
+                                </tr>
+                                
+                                <tr class="group-end">
+                                    <td class="category-cell" rowspan="1">Serum Stability</td>
+                                    <td>% binding</td>
+                                    <td>Specific binding</td>
+                                </tr>
+                            
+                                <tr>
+                                    <td class="category-cell" rowspan="3">Charge heterogeneity</td>
+                                    <td>cIEF Main peak(PI)</td>
+                                    <td>Capillary isoelectric focusing Main Peak PI</td>
+                                </tr>
+                                <tr>
+                                    <td>Poly-D-Lysine Assay Score</td>
+                                    <td>Poly-D-Lysine Surface Binding Assay Score</td>
+                                </tr>
+                                <tr class="group-end">
+                                    <td>% change in Acidics by IEC</td>
+                                    <td>Ion exchange chromatography</td>
+                                </tr>
+                            
+                                <tr>
+                                    <td class="category-cell" rowspan="1">Affinity</td>
+                                    <td>Kd(nM), IC50(μM), EC50(μM), t1/2, Trimer avidity</td>
+                                    <td>dissociation constant,</td>
+                                </tr>
+                            </tbody>
+                          </table>
+                          
+                          
+                          
+                    
+                    </div>
+                </div>
+            </div>
+        </div> <!-- col -->
+    </div> <!-- row -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="custom-panel-heading" name="panel_head">Data Statistics for Latest Release</div>
+                    <div style="display: flex; justify-content: center;">
+                        <div id="roseChart" style="width: 500px; height: 500px; margin-top: 30px;"></div>
+                    </div>
+
+                  
+                    <script>
+                        var roseChart = echarts.init(document.getElementById('roseChart'));
+
+                        var rawData = [
+                        { value: 3, name: 'Multi-specific antibody', color: '#96a9d1' },
+                        { value: 4, name: 'HC2(Heavy Chain Homodimer)', color: '#d9ddeb' },
+                        { value: 6, name: 'ADC', color: '#b22222' },
+                        { value: 8, name: 'Fv mutant', color: '#d89090' },
+                        { value: 9, name: 'PDP', color: '#e5b5b5' },
+                        { value: 26, name: 'Fc heterodimerFc he', color: '#f2dada' },
+                        { value: 28, name: 'Fc fragment', color: '#d7e1eb' },
+                        { value: 87, name: 'BsAb', color: '#c5e9e3' },
+                        { value: 138, name: 'scFv', color: '#afc3d8' },
+                        { value: 145, name: 'Fab', color: '#5f89b1' },
+                        { value: 291, name: 'sdAb', color: '#376b9e' },
+                        { value: 2266, name: 'mAb', color: '#104e8b' }
+                        ];
+
+                        // 去除重复项的函数示例
+                        function removeDuplicates(data) {
+                            const unique = {};
+                            return data.filter(item => {
+                                const key = item.name.toLowerCase()
+                                    .replace(/[^a-z]/g, '')
+                                    .replace('bispecific', 'multispecific');
+                                if (!unique[key]) {
+                                    unique[key] = true;
+                                    return true;
+                                }
+                                return false;
+                            });
+                        }
+
+                        var displayedData = rawData.map(item => ({
+                        value: item.name === 'mAb' ? 500 : item.value,
+                        name: item.name,
+                        color: item.color,
+                        realValue: item.value
+                        }));
+
+                        var option = {
+                        title: {
+                            text: 'NO. of Antibody Format',
+                            left: 'center',
+                            top: '0%', 
+                            textStyle: {
+                            fontSize: 20,  // 加大
+                            fontWeight: 'bold'  // 加粗
+                            }
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: function (params) {
+                            if (params.name === 'mAb') {
+                                return `${params.name}: ${params.data.realValue} (the upper limit display:500)`;
+                            }
+                            return `${params.name}: ${params.data.realValue}`;
+                            }
+                        },
+                        polar: {
+                            radius: [0, '80%']
+                        },
+                        angleAxis: {
+                            type: 'value',
+                            startAngle: 90,
+                            max: 500,
+                            axisLine: {
+                            lineStyle: { color: '#aaa' }
+                            },
+                            axisLabel: {
+                            color: '#666'
+                            },
+                            splitLine: {
+                            lineStyle: { color: '#ddd' }
+                            }
+                        },
+                        
+                        radiusAxis: {
+                            type: 'category',
+                            data: displayedData.map(item => item.name),
+                            axisLine: { show: false },
+                            axisTick: { show: false },
+                            axisLabel: {
+                            color: '#333'
+                            }
+                        },
+                        series: [
+                            {
+                            type: 'bar',
+                            coordinateSystem: 'polar',
+                            roundCap: false,
+                            barWidth: 14,
+                            data: displayedData,
+                            itemStyle: {
+                                color: function (params) {
+                                return params.data.color;
+                                }
+                            },
+                            label: {
+                                show: true,
+                                position: 'outside',  
+                                formatter: function (params) {
+                                return `${params.name}: ${params.data.realValue}`;
+                                },
+                                color: '#000',
+                                fontWeight: 'bold',
+                                fontSize: 10
+                            },
+                            emphasis: {
+                                itemStyle: {
+                                shadowBlur: 10,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                            }
+                        ]
+                        };
+
+                        roseChart.setOption(option);
+                    </script>
+
+
+                    <div style="text-align: center;">
+                        <div id="mainChart" style="width: 100%; min-height: 600px; margin: 30px 20px 30px 40px;"></div>
+                    </div>
+                    <div style="text-align: center;">
+    
+                    <script>
+                        // 完整数据
+                        const rawData2 = [
+                            {
+                                "category": "Thermal stability",
+                                "children": [
+                                    {"name": "Tm(°C)", "value": 2286},
+                                    {"name": "Tagg (ᵒC)", "value": 345},
+                                    {"name": "Tonset(°C)", "value": 244},
+                                    {"name": "ΔH (kcal/mol)", "value": 28}
+                                ]
+                            },
+                            {
+                                "category": "Viscosity",
+                                "children": [
+                                    {"name": "viscosity_1(cP)", "value": 724}
+                                ]
+                            },
+                            {
+                                "category": "Purity",
+                                "children": [
+                                    {"name": "% purity (SEC)", "value": 404},
+                                    {"name": "Purified Yield (mg/L)", "value": 116},
+                                    {"name": "% purity (nrMCE)", "value": 82},
+                                    {"name": "Turbidity(OD)", "value": 2}
+                                ]
+                            },
+                            {
+                                "category": "Poly speacificity",
+                                "children": [
+                                    {"name": "Poly-Specificity Reagent (PSR) SMP Score (0-1)", "value": 655},
+                                    {"name": "ELISA", "value": 185},
+                                    {"name": "BVP ELISA", "value": 165},
+                                    {"name": "CIC Retention Time (Min)", "value": 229},
+                                    {"name": "BVP Assay Score", "value": 126},
+                                    {"name": "PSP (RFU)", "value": 14},
+                                    {"name": "polyspecificity PSR BLI(nm)", "value": 36},
+                                    {"name": "CIC Column K'", "value": 43}
+                                ]
+                            },
+                            {
+                                "category": "Self-interaction",
+                                "children": [
+                                    {"name": "AC-SINS∆λmax (nm) Average", "value": 291},
+                                    {"name": "CSI-BLI Delta Response (nm)", "value": 165},
+                                    {"name": "SGAC-SINS AS100 ((NH4)2SO4 mM)", "value": 163},
+                                    {"name": "AC-SINS λmax (nm)", "value": 142},
+                                    {"name": "AC-SINS Δλmax (nm)", "value": 116},
+                                    {"name": "AC-SINS DiffC (µm²/s)", "value": 99},
+                                    {"name": "CS-SINS (ave)", "value": 43},
+                                    {"name": "AC-SINS score", "value": 5},
+                                    {"name": "CS-SINS score", "value": 14}
+                                ]
+                            },
+                            {
+                                "category": "Hydrophobicity",
+                                "children": [
+                                    {"name": "HIC Retention Time (Min)", "value": 1302},
+                                    {"name": "SMAC Retention Time (Min)", "value": 181},
+                                    {"name": "HIC Retention volume(mL)", "value": 26}
+                                ]
+                            },
+                            {
+                                "category": "Afinity",
+                                "children": [
+                                    {"name": "kD_antigen", "value": 928},
+                                    {"name": "kD(nM)", "value": 755},
+                                    {"name": "ic50(μg/ml)", "value": 205},
+                                    {"name": "ec50(nM)", "value": 54},
+                                    {"name": "Trimer avidity", "value": 31},
+                                    {"name": "ΔG(kcal/mol)", "value": 32}
+                                ]
+                            },
+                            {
+                                "category": "Colloidal stability",
+                                "children": [
+                                    {"name": "%HMMS", "value": 178},
+                                    {"name": "%LMMS", "value": 78},
+                                    {"name": "SEPAX retention time (min)", "value": 82},
+                                    {"name": "Colloidal Stability", "value": 88},
+                                    {"name": "HMW Slope (%HMW/per week)", "value": 17}
+                                ]
+                            },
+                            {
+                                "category": "Charge heterogeneity",
+                                "children": [
+                                    {"name": "PI", "value": 291},
+                                    {"name": "PI fv", "value": 164},
+                                    {"name": "Poly-D-Lysine Assay Score", "value": 83},
+                                    {"name": "cIEF Main peak(PI)", "value": 49},
+                                    {"name": "Fab.PI", "value": 43},
+                                    {"name": "Charge variant variation (% area main species, iCE),2~8℃", "value": 3},
+                                    {"name": "Charge variant variation (% area main species, iCE)25℃", "value": 3},
+                                    {"name": "Change in Acidics (%)by IEC", "value": 3}
+                                ]
+                            },
+                            {
+                                "category": "Nonspecifc binding",
+                                "children": [
+                                    {"name": "hFcRn_RT", "value": 148},
+                                    {"name": "Hep_RT", "value": 65},
+                                    {"name": "Membrane Prep Assay Score", "value": 83},
+                                    {"name": "PEI Assay Score", "value": 83},
+                                    {"name": "%Heparin_HpnIP", "value": 2},
+                                    {"name": "%Heparin_elution NaCl(nM)", "value": 2}
+                                ]
+                            },
+                            {
+                                "category": "Expression Titer",
+                                "children": [
+                                    {"name": "HEK Titer (mg/L)", "value": 167},
+                                    {"name": "CHO cell titer(mg/L)", "value": 109}
+                                ]
+                            },
+                            {
+                                "category": "Molecular size",
+                                "children": [
+                                    {"name": "SEC Retention Volume (mL)", "value": 54},
+                                    {"name": "SEC retention time(min)", "value": 45}
+                                ]
+                            },
+                            {
+                                "category": "Conformational Stabiliy",
+                                "children": [
+                                    {"name": "D(Diffusion interaction parameter)(mL/g)", "value": 403},
+                                    {"name": "DSF_WSS", "value": 19},
+                                    {"name": "ICD Chalf (M)CH2 Domain", "value": 12},
+                                    {"name": "ICD Chalf (M)CH3 Domain", "value": 12}
+                                ]
+                            },
+                            {
+                                "category": "Other stability",
+                                "children": [
+                                    {"name": "Slope for Accelerated Stability", "value": 165},
+                                    {"name": "Aggregation rate", "value": 20}
+                                ]
+                            },
+                            {
+                                "category": "Pharmacokinetic",
+                                "children": [
+                                    {"name": "FcRn Cellular Recycling (ng/mL)", "value": 42}
+                                ]
+                            },
+                            {
+                                "category": "Serum Stablity",
+                                "children": [
+                                    {"name": "Serum Stability (% binding)", "value": 35}
+                                ]
+                            },
+                            {
+                                "category": "Solubity",
+                                "children": [
+                                    {"name": "Solubility_PEGmid (%)", "value": 77}
+                                ]
+                            }
+                        ];
+                  
+                        const COLOR_PALETTE = [
+                            '#376b9e', '#5f89b1', '#afc3d8', '#c5e9e3',
+                            '#d7e1eb', '#f2dada', '#e5b5b5', '#d89090'
+                        ];
+
+                        // 转换数据格式并排序
+                        function transformData(rawData2) {
+                            // 按 category 的总值排序
+                            rawData2.sort((a, b) => {
+                                const sumA = a.children.reduce((acc, curr) => acc + curr.value, 0);
+                                const sumB = b.children.reduce((acc, curr) => acc + curr.value, 0);
+                                return sumA - sumB;
+                            });
+
+                            const categories = rawData2.map(item => item.category);
+                            const data = [];
+
+                            // 每个 category 内部按 value 排序
+                            rawData2.forEach(category => {
+                                category.children.sort((a, b) => b.value - a.value); 
+                            });
+                            const maxMetrics = Math.max(...rawData2.map(item => item.children.length));
+                            const series = [];
+
+                            for (let i = 0; i < maxMetrics; i++) {
+                                const data = rawData2.map(cat => {
+                                    const child = cat.children[i];
+                                    return child ? {
+                                        value: child.value,
+                                        name: child.name,
+                                        category: cat.category, 
+                                        itemStyle: {
+                                            color: COLOR_PALETTE[i % COLOR_PALETTE.length]
+                                        }
+                                    } : {
+                                        value: 0,
+                                        name: '',
+                                        category: cat.category,
+                                        itemStyle: { opacity: 0 }
+                                    };
+                                });
+
+                                series.push({
+                                    name: `Metric ${i + 1}`,
+                                    type: 'bar',
+                                    stack: 'total',
+                                    barWidth: 15,
+                                    data: data,
+                                    emphasis: { focus: 'self' },
+                                    label: { show: false }
+                                });
+                            }
+
+                            return { categories, series };
+                        }
+
+                        // 渲染图表
+                        const { categories, series } = transformData(rawData2);
+                        const chart = echarts.init(document.getElementById('mainChart'));
+                        chart.setOption({
+                            title: {
+                                text: 'Antibody Properties Analysis',
+                                left: 'center',
+                                top: 10,
+                                textStyle: {
+                                    fontSize: 18,
+                                    fontWeight: 'bold',
+                                }
+                            },
+                            
+                            tooltip: {
+                                trigger: 'item',
+                                formatter: function (params) {
+                                    const { name, value, category } = params.data;
+                                    return `<b>${category}</b><br/>${name}: <b>${value}</b>`;
+                                },
+                                backgroundColor: '#fff',
+                                borderColor: '#ccc',
+                                borderWidth: 1,
+                                textStyle: {
+                                    fontSize: 12,
+                                    color: '#333'
+                                }
+                            },
+                            grid: {
+                                left: '15%',
+                                right: '10%',
+                                bottom: '10%',
+                                top: 70
+                            },
+                            xAxis: {
+                                type: 'value',
+                                max: 3000
+                            },
+                            yAxis: {
+                                type: 'category',
+                                data: categories,
+                                axisLabel: {
+                                    fontSize: 12
+                                }
+                            },
+                           
+                            series: series
+                        });
+                    </script>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div> 
 
 
 {% endblock main %}

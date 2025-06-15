@@ -7,8 +7,8 @@
             <div class="container">
                 <div class="row">
                     <div class="d-flex flex-column justify-content-center align-items-center h-100 mx-auto serch-content">
-                        <h1 class="display-4">Search Antibodies in Our Database</h1>
-                        <p class="lead mb-4">Find validated antibodies, assays, and more.</p>
+                        <h1 class="display-4"><strong>Search Antibodies in Our Database</strong></h1>
+                        <p class="lead mb-4">Find experimentally validated antibodies</p>
                         <div class="search-container">
                             <div>
                                 <form action="{% url 'blog:antibody_search' %}" method="get" class="d-flex w-100">
@@ -32,21 +32,24 @@
                     <a href="/antibody_search/?q=abituzumab" style="color:#20212B">&nbsp abituzumab &nbsp</a> |
                     <a href="/antibody_search/?q=Tm%28°C%29&type=property" style="color:#20212B">&nbsp Tm(°C) &nbsp</a> |
                     <a href="/antibody_search/?q=viscosity&type=property" style="color:#20212B">&nbsp viscosity &nbsp</a>
-                </div>                            
-                    
+                    <!-- 改为 button，并添加 data-toggle 和 data-target -->
+                    <a href="{% url 'blog:sequence_similarity' %}" class="btn" style="font-weight: bold; background-color: #003366; color: white; margin-left:6rem; text-decoration: none;">
+  &nbsp Sequence Similarity &nbsp</a>
+                </div>
             </div>
         </div>
     </div>
+   
     <section class="about-database py-5">
         <div class="container">
-            <h2 class="text-center mb-4">About Antibody Database</h2>
+            <h2 class="text-center mb-4">About DevoAb Database</h2>
             <p class="text-justify">
-                The Antibody Database serves as a groundbreaking resource in the field of antibody drug design, where accurately predicting antibody properties is essential for selecting optimal candidate drugs and enhancing therapeutic efficacy. It compiles experimentally determined physicochemical properties of antibodies, providing invaluable references for antibody drug development.
+                The DevoAb Database serves as a groundbreaking resource in the field of antibody drug design, where accurately predicting antibody properties is essential for selecting optimal candidate drugs and enhancing therapeutic efficacy. It compiles experimentally determined physicochemical properties of antibodies, providing invaluable references for antibody drug development.
             To date, the database has accumulated information on <strong>1,302 antibodies</strong>, including <strong>918 sequences</strong> and <strong>6,772 distinct antibody properties</strong>, supporting the advancement of antibody-based research and drug design.<a href="/about" class="content" style="font-weight: bold;color:rgb(9, 120, 163)">Learn more > </a>
             </p> 
          </div>
     </section>
-    
+
 {% endblock main %}
 
 {% block toc %}
@@ -57,8 +60,7 @@
 <style>
   body {
     background: #ffffff;
-    font-family: 'Segoe UI', sans-serif;
-    color: #333;
+    
   }
 
   .stats-grid {
@@ -99,6 +101,16 @@
     font-size: 20px;
     color: #666;
   }
+
+.icon-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+
+
 </style>
 
 <div class="stats-grid">
@@ -113,9 +125,11 @@
     <div class="stat-label">Records</div>
   </div>
   <div class="stat-card">
-    <div class="stat-icon"><i class="fa fa-dna"></i></div>
+    <div class="stat-icon">
+       <img src="{% static 'blog/images/antibody_icon.png' %}" alt="Antibody" class="icon-img">
+    </div>
     <div class="counter-up">3396</div>
-    <div class="stat-label">Antibodies</div>
+  <div class="stat-label">Antibodies</div>
   </div>
   <div class="stat-card">
     <div class="stat-icon"><i class="fa fa-book"></i></div>
@@ -123,6 +137,7 @@
     <div class="stat-label">References</div>
   </div>
 </div>
+
 
 
 </script><script>
@@ -134,6 +149,12 @@
   });
 </script>
 
+<script>
+  function insertExample() {
+    const example = `>Example1\nEIIEGMCYLHGKGVIHKDLKPENILVDNDFHIKIADLGLASFKMWSKLNNEEHNELREVDGTAKKNGGTLYYMAPEHLNDVNAKPTEKSDVYSFAVVLWAIFANKEPYENAICEQQLIMC`;
+    document.getElementById("sequenceInput").value = example;
+  }
+</script>
 
  
 {% endblock toc %}

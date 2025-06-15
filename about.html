@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+	<!--resolve compatibility of IE-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+    <title>PROTAC-DB</title>
+	<link rel="stylesheet" type="text/css" href="{{ static_url('bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ static_url('uis/jquery-ui-1.11.4.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ static_url('ProtacdbStyle.css') }}">
+    <script src="https://unpkg.com/@rdkit/rdkit/dist/RDKit_minimal.js"></script>
+</head>
+<body onload="loadData()">
+<!-- welcome  navbar -->
+<nav class="navbar navbar-default navbar-static-top " role="navigation">
+	<div class="container">
+	    <div class="navbar-header" >
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#example-navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+		    <a class="navbar-brand" href="/protacdb/">PROTAC-DB</a>
+	    </div>
+        <div class="collapse navbar-collapse" id="example-navbar-collapse">
+            <ul class="nav navbar-nav pull-right">
+                <li>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-size: 16px">
+                        Browse
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/protacdb/browse/target">Target</a></li>
+                        <li><a href="/protacdb/browse/compound">Compound</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="/protacdb/downloads" style="font-size: 16px">Downloads</a>
+                </li>
+                <li>
+                    <a href="/protacdb/about" style="font-size: 16px">About</a>
+                </li>
+                <li>
+                    <a href="/protacdb/help" style="font-size: 16px">Help</a>
+                </li>
+                <li>
+                    <a href="/protacdb/papers" style="font-size: 16px">Papers</a>
+                </li>
+                <li>
+                    <a href="/protacdb/contact" style="font-size: 16px">Contact</a>
+                </li>
+            </ul>
+        </div>
+	</div>
+</nav>
+<!-- welcome  navbar -->
+
+<!-- search section -->
+<section class="search_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2 col-md-push-7 col-sm-3 col-xs-4">
+                <div class="row pull-right">
+                    <select class="form-control" id="dataset_search_area" style="height: 30px;border-radius: 20px;width: 130px;cursor: pointer;font-weight: bold">
+                        <option value="protac" style="padding-top:10px;padding-bottom: 20px">PROTACs</option>
+                        <option value="warhead" style="padding-top:10px;padding-bottom: 20px">Warheads</option>
+                        <option value="e3_ligand">E3 ligands</option>
+                        <option value="linker">Linkers</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3 col-md-push-7 col-sm-5 col-xs-8">
+                <div class="row pull-left" style="width: 220px;">
+                    <div class="input-group" style="margin-left: 20px">
+                        <input type="text" class="form-control" id="search_area_content" style="height: 30px;border-bottom-left-radius: 20px;border-top-left-radius: 20px">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" type="button" onclick="search_area()" style="height: 30px;border-bottom-right-radius: 20px;border-top-right-radius: 20px">
+                            <span class="glyphicon glyphicon-search" style="font-size: 14px;color: #a0a2aa;"></span>
+                            </button>
+                        </div><!-- /btn-group -->
+                    </div><!-- /input-group -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- search section -->
+<br>
+<br>
+{% raw xsrf_form_html() %}
+<!-- papers -->
+<div class="container">
+    <div class="col-md-12 col-sm-12">
+        <div class="panel panel-default" >
+            <div class="panel-heading" name="panel_head">What are PROTACs?</div>
+            <div class="panel-body about_content">
+                <div class="pull-left text-justify">
+                    <p>
+                        <strong>Proteolysis-targeting chimeras (PROTACs)</strong> which <strong>induce targeted protein degradation by the
+                        ubiquitin-proteasome system</strong> represent a new therapeutic strategy. Unlike traditional
+                        small-molecule strategies, which exert its efficacy mainly through binding site occupancy,
+                        PROTACs target the specific protein for degradation, thus also eliminating other functions of
+                        the protein. In additions, while some small molecules are restricted to bind to the catalytic
+                        pocket, PROTACs are capable of utilizing all surface binding pockets on the targeted protein
+                        for degradation.
+                    </p>
+                    <p>
+                        <strong>PROTACs are heterobifunctional molecules</strong>, typically containing a small molecule which targets
+                        the protein of interest (<strong>warhead</strong>), a small molecule capable of recruiting an E3 ligase
+                        (<strong>E3 ligand</strong>), and a <strong>linker</strong> to conjugate the above two moieties (Figure 1).
+                    </p>
+                </div>
+                <div class="col-md-8 col-md-push-2" align="center">
+                    <img src="{{ static_url('images/vhl_ligand.png') }}" class="img-responsive">
+                </div>
+                <div class="col-md-12" align="center">
+                    <p style="font-size: 13px">Figure 1. The BRD4-PROTAC-VHL complex. The cyan, white and orange moieties represent the warhead, linker and E3 ligand, respectively.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default" >
+            <div class="panel-heading" name="panel_head">About PROTAC-DB</div>
+            <div class="panel-body about_content">
+                <div class="pull-left text-justify">
+                    <p>
+                        PROTAC-DB is a public, web-accessible database. The <strong>chemical structures, biological activities,
+                        physiochemical properties, pharmacokinetic parameters</strong> of these compounds are manually extracted from the
+                        literature or calculated by some programs. Here, the biological activities of PROTACs contain
+                        the <strong>degradation capacity, binding affinities and cellular activities</strong>. The
+                        detailed information is as follows.
+                    </p>
+                    <ul style="margin-left: 20px">
+                        <li>
+                            <p><span style="font-weight: bold">Degradation capacity:</span> In general, <strong>DC50</strong> (concentration that resulted in a 50%
+                                targeted protein degradation) and <strong>Dmax</strong> (maximal levels of protein degradation)
+                                are utilized to quantify the power of targeted protein degradation of PROTACs.However,
+                                since a large number of PROTACs lacked the above data, the <strong>percent degradation</strong> was
+                                integrated to the database, if it was assessed at least with two concentrations and
+                                each concentration was measured with at least two independent experiments. Further,
+                                the <strong>Western blotting (WB) figures</strong> were also collected by us to show the degradation
+                                capacities of PROTACs. But the WB figures are only
+                                displayed on the detailed information pages of PROTACs, not on its list pages.</p>
+                        </li>
+                        <li>
+                            <p><span style="font-weight: bold">Binding affinities:</span> The binding affinities between
+                                <strong>PROTACs and targeted proteins, PROTACs and E3 ligases, the formation of ternary
+                                    complexes</strong> are collected into PROTAC-DB. The binding affinities of the formation
+                                of ternary complexes are employed to assess the capacity of PROTAC-induced complex formation
+                                    with E3 ligase and targeted protein. It can be determined through some assays between E3
+                                ligase (targeted protein) and the complex of PROTAC and targeted protein (E3 ligase).
+                                There are four types of values, including Kd, Ki, IC50 and EC50. Only Kd and IC50 will be
+                                displayed on the list pages and the other are shown on the detailed information pages.
+                                In addition, for the biophysical binding data, ΔG, ΔH, -TΔS, t1/2, kon and koff are also
+                                collected into the database and only displayed on the detailed information page.
+                            </p>
+                        </li>
+                        <li>
+                            <p><span style="font-weight: bold">Cellular activities:</span> IC50, EC50, GI50, ED50 and GR50 are collected
+                                into PROTAC-DB. Similarly, ED50 and GR50 are only displayed on the detailed information
+                                pages, not on the list pages.
+                            </p>
+                        </li>
+                        <li>
+                            <p><span style="font-weight: bold">Cell permeability:</span> PAMPA and Caco-2 permeability data are collected
+                                into PROTAC-DB and only displayed on the detailed information pages.
+                            </p>
+                        </li>
+                        <li>
+                            <p><span style="font-weight: bold">Pharmacokinetic parameters:</span> Tmax, T 1/2, Cmax, AUC, Vz, Vss, CL, MRT 					and Bioavailability data are collected into PROTAC-DB and only displayed on the detailed information pages.
+                            </p>
+                        </li>
+                    </ul>
+                    <p>
+                        Moreover, the biological activities of warheads and E3 ligands are also collected.
+                    </p>
+                    <p>
+                        Considering the importance and limited number of crystal structures of ternary
+                        complex, <strong>we also provide the predicted ternary complex models for PROTACs with
+                        good degradation capacity using our PROTAC-Model method</strong>
+                        (<a href="https://doi.org/10.1021/acs.jmedchem.1c01576" target="_blank">J. Med. Chem. 2021, 64, 21, 16271-16281</a>).
+                        PROTAC-Model is an integrative
+                        computational method by combining the FRODOCK-based protocol and RosettaDock-based
+                        refinement. Using the unbound structures, the FRODOCK-based protocol can generate
+                        the ternary complex structures with medium or high quality for 8 out of 14 test
+                        cases. With the refinement by RosettaDock, the cases with medium or high quality
+                        increase to 12.
+                    </p>
+                    <p>We will constantly add new data and improve the usability of the interface.
+                        For feedback, suggestions, errors or bug reports, please <a href="/protacdb/contact" style="font-weight: bold;">contact us</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default" >
+            <div class="panel-heading" name="panel_head">Privacy Policy</div>
+            <div class="panel-body about_content">
+                <div class="pull-left text-justify">
+                    <p>
+                        We collect some of your personal data:
+                    </p>
+                    <ul style="margin-left: 20px">
+                        <li>
+                            Location of IP address
+                        </li>
+                        <li>
+                            Date and time of visit to the service
+                        </li>
+                    </ul>
+                    <p>
+                        We use <a href="https://www.revolvermaps.com/">RevolverMaps</a> to collect statistics about PROTAC-DB.
+                    </p>
+                    <p>
+                        These statistics are not used to track users individually, but rather to monitor the performance and the usage of the website.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default" >
+            <div class="panel-heading" name="panel_head">Statistics</div>
+            <div class="panel-body">
+               <div class="alert alert-danger about_content" align="center">
+                   <button type="button" class="close" data-dismiss="alert">×</button>
+                   <p>The <strong>warheads</strong> and <strong>E3 ligands</strong> here represent the structures integrated into PROTACs after modification, not the initial structures.</p>
+                   <p><strong>Chart operation: </strong>You can select which bar to show in the legend.</p>
+               </div>
+               <div id="highcharts">
+               </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- index_modal -->
+<div class="modal fade" id="index" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content" style="color:#a94442;background-color:#f2dede;">
+			<div class="modal-body">
+                <div style="width: 565px;">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <span class="glyphicon glyphicon-remove" style="font-size: 14px"></span>
+                    </button>
+                    <span id="index_content" style="font-weight: bold" ></span>
+                </div>
+            </div>
+		</div>
+	</div>
+</div>
+<!-- index_modal -->
+
+<div class="footer">
+    <div class="container" align="center">
+        <b class="copyright" >&copy; 2025 <a href="http://cadd.zju.edu.cn/en">Tingjun Hou's Group</a></b> All Rights Reserved
+    </div>
+</div>
+</body>
+    <script src="{{ static_url('jquery-3.2.1.min.js') }}" type="text/javascript"></script>
+    <script src="{{ static_url('bootstrap.min.js') }}" type="text/javascript"></script>
+    <script src="{{ static_url('highcharts.js') }}" type="text/javascript"></script>
+    <script src="{{ static_url('exporting.js') }}" type="text/javascript"></script>
+    <script src="{{ static_url('oldie.js') }}" type="text/javascript"></script>
+    <script src="{{ static_url('Protacdb.js') }}" type="text/javascript"></script>
+<script>
+    //按回车键调用search_area()
+    $(function(){
+    $(document).keyup(function(event){
+    if(event.keyCode==13){
+    search_area();
+    }
+    });
+    });
+
+    //加载statistics数据
+    function loadData(){
+        var Data = new FormData();
+        Data.append("_xsrf", getCookie('_xsrf'));
+        $.ajax
+        ({
+            url: window.location.href,
+            type: 'POST',
+            data: Data,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (returnInfo) {
+                var content = JSON.parse(returnInfo);
+                var arr_x = new Array();
+                var arr_protac = new Array();
+                var arr_warhead = new Array();
+                var arr_e3_ligand = new Array();
+                var arr_linker = new Array();
+                var height = content.length * 15;
+                for(var i = 0;i < content.length; i++){ //遍历一下json数据 
+                    arr_x.push(content[i].short_target_name);
+                    arr_protac.push(content[i].protac);
+                    arr_warhead.push(content[i].warhead);
+                    arr_e3_ligand.push(content[i].e3_ligand);
+                    arr_linker.push(content[i].linker);
+                }
+                showchart(arr_x, arr_protac, arr_warhead, arr_e3_ligand, arr_linker, height)
+            }
+        });
+    }
+
+    function showchart(arr_x, arr_protac, arr_warhead, arr_e3_ligand, arr_linker, height){
+        chart = Highcharts.chart('highcharts', {
+            chart: {
+                type: 'bar',
+                height: height
+            },
+            exporting: {
+                enabled: false,
+                buttons: {    
+                    contextButton: {
+                    enabled: false
+                    }
+                }
+            },
+            title: {
+                text: null
+            },
+            xAxis: {
+                categories: arr_x
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: null
+                },
+                labels: {
+                    overflow: 'justify'
+                }
+            },
+            plotOptions: {
+                series: {
+                    dataLabels: {
+                    enabled: true,
+                    allowOverlap: false
+                    },
+                    stacking: "normal",
+                    animation: false
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: 0,
+                y: 0,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+                shadow: true
+            },
+            series: [{
+                name: 'PROTACs',
+                data: arr_protac
+            }, {
+                name: 'Warheads',
+                data: arr_warhead,
+                color: "#e4d354"
+            }, {
+                name: 'E3 ligands',
+                data: arr_e3_ligand,
+                color: '#90ed7d'
+            }, {
+                name: 'Linkers',
+                data: arr_linker,
+                color: '#f7a35c'
+            }]
+        });
+    }
+</script>
+</html>

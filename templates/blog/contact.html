@@ -1,63 +1,92 @@
 {% extends 'base.html'%}
 
 {% block main %}
+<style>
+    .contact-card {
+        width: 90%;
+        max-width: 600px;
+        margin: 40px auto;
+        background: #ffffff; /* 白色背景 */
+        border: 1px solid #ccc; /* 灰色边框 */
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        padding: 30px 40px;
+        font-family: 'Segoe UI', sans-serif;
+        color: #333;
+        line-height: 1.6;
+    }
 
-    <style>
-        /* 页面容器，居中显示 */
-        .container {
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    .contact-card h2 {
+        font-size: 22px;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 5px;
+        color: #444;
+    }
 
-        .panel {
-            width: 100%;
-            max-width: 1000px; /* 最大宽度 */
-            margin: 20px;
-            border: 2px solid #d3d3d3; /* 灰色边框 */
-            border-radius: 10px; /* 圆角效果 */
-        }
+    .contact-card p {
+        margin: 4px 0;
+        font-size: 16px;
+    }
 
-        /* Panel样式 */
-        
-        .panel-body {
-            padding: 50px;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-        }
+    .contact-card a {
+        color: #0066cc;
+        text-decoration: none;
+    }
 
-        .panel-body p {
-            margin: 20px 0;
+    .contact-card a:hover {
+        text-decoration: underline;
+    }
 
-        }
+    .team-member {
+        margin-top: 10px;
+        font-weight: 500;
+    }
 
-        
-        
-    </style>
+    .address-section {
+        text-align: center; /* 居中地址文字 */
+    }
+</style>
 
-
-    <div class="container">
-        <div class="col-md-6 col-sm-8 col-sm-push-2 col-md-push-3">
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
             <div class="panel panel-default">
+                <div class="custom-panel-heading" name="panel_head">Conatact Us</div>
                 <div class="panel-body about_content">
-                    <p style="font-size: 20px">If you have any questions, please contact:</p>
-                    <p style="font-weight: bold; font-size: 22px"><strong>Address:</strong></p>
-                    <p>College of Pharmaceutical Sciences</p>
-                    <p>Zhejiang University</p>
-                    <p>Hangzhou, Zhejiang 310058, China
-                    </p>
-                    <p style=" font-size: 22px"><strong>Team:</strong></p>
-                    <p style=" font-size: 16px">Prof. Tingjun Hou</p>
-                    <p>Email: <a href="mailto:tingjunhou@zju.edu.cn">tingjunhou@zju.edu.cn</a></p>
+                    <div class="pull-left text-justify">
+                        <p style="font-size: 20px">
+                          DevoAb is developed and maintained by Tingjun Hou's group. As with any database, errors may have occurred during data collection and curation. 
+                          If you notice any inaccuracies or issues, we encourage you to report them to us. 
+                          Your feedback is highly valued and will help us improve DevoAb to better serve the scientific community involved in both basic and applied research. 
+                          For any issues or inquiries,, please don't hesitate to contact us.
+                        </p>
+                        <div class="contact-card">
+                            <h2>Address</h2>
+                            <div class="address-section">
+                                <p>College of Pharmaceutical Sciences</p>
+                                <p>Zhejiang University</p>
+                                <p>Hangzhou, Zhejiang 310058, China</p>
+                            </div>
 
-                    <p style=" font-size: 16px">Stu. Nanqi Hong</p>
-                    <p>Email: <a href="#">xxxxxx@zju.edu.cn</a></p>
+                            <h2>Team</h2>
+                            <div class="address-section">
+                                <p class="team-member">Prof. Tingjun Hou</p>
+                                <p>Email: <a href="mailto:tingjunhou@zju.edu.cn">tingjunhou@zju.edu.cn</a></p>
+
+                                <p class="team-member">Stu. Nanqi Hong</p>
+                                <p>Email: <a href="#">xxxxxx@zju.edu.cn</a></p>
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
 
                     
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 {% endblock main %}

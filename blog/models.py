@@ -8,21 +8,22 @@ class Antibody(models.Model):
     id_db=models.TextField(null=True, blank=True)
     name=models.CharField(max_length=255)
     date = models.IntegerField(null=True, blank=True) 
+    paper=models.TextField()
     reference=models.TextField()
     doi=models.URLField()
+    format=models.TextField(null=True, blank=True)
+    other_id=models.TextField(null=True, blank=True)
+    organism=models.TextField(null=True, blank=True)
     sequence=models.JSONField(null=True, blank=True)
-    properties=models.JSONField(default=dict,null=True, blank=True)
-    property_keys = models.TextField(null=True, blank=True)  # 存储所有性质键名
-    
-    def get_properties(self):
-        return json.load(self.properties)
-    
-    def save(self, *args, **kwargs):
-        # 自动提取 properties 的键名，存储到 property_keys 中
-        
-        if self.properties:
-            self.property_keys = ", ".join(self.properties.keys())
-        super().save(*args, **kwargs)
     
     def __str__(self):
         return self.name
+    
+class AntibodyProperty(models.Model):
+    antibody = models.ForeignKey(Antibody, on_delete=models.CASCADE, related_name='property_list')
+    property_name = models.CharField(max_length=255)
+    value = models.CharField(max_length=255)
+    assay = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.property_name}: {self.value}"

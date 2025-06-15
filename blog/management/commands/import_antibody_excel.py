@@ -1,7 +1,7 @@
-import json
+
 import pandas as pd
 from django.core.management.base import BaseCommand
-from blog.models import Antibody
+from blog.models import Antibody, AntibodyProperty
 from django.db import transaction
 import logging
 
@@ -13,70 +13,120 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         excel_file = kwargs['excel_file']
-        logging.basicConfig(filename='import_antibody.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+        logging.basicConfig(
+            filename='import_antibody.log',
+            level=logging.INFO,
+            format='%(asctime)s - %(levelname)s - %(message)s'
+        )
+
+        self.stdout.write("Deleting old antibody data...")
+        Antibody.objects.all().delete()
+        self.stdout.write(self.style.SUCCESS("Old data deleted successfully."))
+        logging.info("Old data deleted successfully.")
+        
         try:
-             # 清空数据库中的旧数据
-            self.stdout.write("Deleting old antibody data...")
-            Antibody.objects.all().delete()
-            self.stdout.write(self.style.SUCCESS("Old data deleted successfully."))
-            logging.info("Old data deleted successfully.")
-            
-            # 读取  antibody_list.antibody_list.antibody_list.antibody_list'CSI-BLI Delta Response (nm)'''ELISA'.an.
             df = pd.read_excel(excel_file)
             df.columns = df.columns.str.strip()
-            
-            # 遍历 DataFrame 中的每一行，导入抗体数据
-            antibody_list = []
+
+            skip_columns = ['id_db', 'date', 'name', 'format', 'other_id', 'organism',
+                            'paper', 'reference', 'doi', 'note', 'http']
+            skip_columns += [col for col in df.columns if 'sequence' in col.lower()]
+
+            success_count = 0
+            fail_count = 0
+            skipped_rows = 0
+            failed_antibodies = []
+
+            self.stdout.write(f"Excel columns: {df.columns.tolist()}")
+            self.stdout.write(f"Total rows: {len(df)}")
+
             for index, row in df.iterrows():
-                try:
-                    id_db=row['id_db']
-                    date=row['date'] if not pd.isna(row['date']) else None  # 设置为 None 表示空值
-                    antibody_name = row['name']
-                    if not antibody_name:
-                        logging.warning(f"Skipping row {index}: 'name' is missing")
-                        continue 
-                    reference = row['reference']
-                    doi = row['doi']
-                    # 解析 sequence 数据（根据列名包含 "sequence" 来识别）
-                    sequence = {
-                        col.replace(" sequence", ""): row[col]
-                        for col in df.columns if "sequence" in col and not pd.isnull(row[col])
-                    }
+                name = str(row.get('name')).strip()
+                if not name or name.lower() == 'nan':
+                    self.stdout.write(f"Skipping row {index} due to missing name.")
+                    continue
+                self.stdout.write(f"Processing row {index}: {name}")
 
+            with transaction.atomic():
+                for index, row in df.iterrows():
+                    name = row.get('name')
+                    if not name:
+                        continue  # 跳过没有名字的抗体
 
-
-                    # 动态生成 properties
-                    properties_columns = [col for col in df.columns if col not in ['name', 'sequence_VH', 'sequence_VL', 'sequence_CH2','sequence_CH3', 'reference', 'doi','number','id_db','http','date','note',]]
-                    properties = {col: row[col] for col in properties_columns if not pd.isna(row[col])}
-                    property_keys = ", ".join(key.strip() for key in properties.keys())  # 去掉多余空格
-                    if not properties:
-                        logging.warning(f"Skipping row {index}: No properties found for antibody '{antibody_name}'")
-                        continue
-            
-
-                    antibody_list.append(
-                        Antibody(
-                            id_db=id_db,
-                            date=date,
-                            name=antibody_name,
-                            reference=reference,
-                            doi=doi,
-                            sequence=sequence,
-                            properties=properties,
-                            property_keys= property_keys,
+                    try:
+                        antibody = Antibody.objects.create(
+                            id_db=row.get('id_db'),
+                            date=row.get('date') if pd.notna(row.get('date')) else None,
+                            name=name,
+                            format=row.get('format'),
+                            other_id=row.get('other_id'),
+                            organism=row.get('organism'),
+                            paper=row.get('paper'),
+                            reference=row.get('reference'),
+                            doi=row.get('doi'),
+                            sequence={col.replace(" sequence", "").strip(): row[col] for col in df.columns
+                                      if "sequence" in col.lower() and pd.notna(row[col])}
                         )
-                    )
-                    logging.info(f"Successfully processed antibody: {antibody_name}")
-                
-                except Exception as e:
-                    logging.error(f"Error processing row {index}: {str(e)}")
-            
 
-            # 批量插入数据
-            if antibody_list:
-                Antibody.objects.bulk_create(antibody_list, ignore_conflicts=True)
-                self.stdout.write(self.style.SUCCESS(f"Imported {len(antibody_list)} antibodies successfully"))
-             # 更新 property_keys 字段
-            
+                        valid_property_found = False
+
+                        for col in df.columns:
+                            if col.lower().startswith('assay'):
+                                continue
+                            if col in skip_columns or pd.isna(row[col]):
+                                continue
+
+                            idx = df.columns.get_loc(col)
+                            assay = None
+                            for offset in [1, 2]:
+                                if idx + offset < len(df.columns):
+                                    next_col = df.columns[idx + offset]
+                                    if 'assay' in next_col.lower():
+                                        next_val = row[next_col]
+                                        if pd.notna(next_val):
+                                            assay = str(next_val)
+                                            break
+
+                            AntibodyProperty.objects.create(
+                                antibody=antibody,
+                                property_name=col.strip(),
+                                value=str(row[col]),
+                                assay=assay
+                            )
+                            valid_property_found = True
+
+                        if not valid_property_found:
+                            skipped_rows += 1
+                            logging.warning(f"Skipping row {index}: No valid properties found")
+                            self.stdout.write(self.style.WARNING(f"Skipping row {index}: No valid properties found"))
+                        else:
+                            success_count += 1
+                            logging.info(f"Successfully processed antibody: {name}")
+                            self.stdout.write(self.style.SUCCESS(f"Successfully imported antibody: {name}"))
+
+                    except Exception as e:
+                        fail_count += 1
+                        failed_antibodies.append(name or f"Row {index}")
+                        logging.error(f"Failed to import antibody at row {index}: {str(e)}")
+                        self.stdout.write(self.style.ERROR(f"Failed to import antibody at row {index}: {str(e)}"))
+
+            # 汇总输出
+            self.stdout.write(self.style.SUCCESS("\n=== Import Summary ==="))
+            self.stdout.write(f"Successfully imported: {success_count}")
+            self.stdout.write(f"Skipped rows (no valid properties): {skipped_rows}")
+            self.stdout.write(f"Failed imports: {fail_count}")
+            if failed_antibodies:
+                self.stdout.write("Failed antibody names or rows:")
+                for name in failed_antibodies:
+                    self.stdout.write(f" - {name}")
+
+            logging.info("=== Import Summary ===")
+            logging.info(f"Successfully imported: {success_count}")
+            logging.info(f"Skipped rows: {skipped_rows}")
+            logging.info(f"Failed imports: {fail_count}")
+            for name in failed_antibodies:
+                logging.info(f"Failed antibody: {name}")
+
         except Exception as e:
-            logging.critical(f"Critical error: {str(e)}")
+            logging.error(f"Fatal error: {str(e)}")
+            self.stdout.write(self.style.ERROR(f"Fatal error: {str(e)}"))

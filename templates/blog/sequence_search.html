@@ -1,0 +1,150 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block main %}
+
+<div class="container">
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="custom-panel-heading" name="panel_head">Sequence Similarity Search</div>
+        <div class="container mt-4 mb-4">
+          <form method="post" action="{% url 'blog:sequence_similarity' %}">
+            {% csrf_token %}
+
+            <!-- 修改后的选择区域 - 标题和选项在同一行且高度对齐 -->
+            <div class="form-group pl-4 pr-4">
+              <div class="d-flex align-items-baseline flex-wrap">
+                <span class="mr-4" style="font-size: 16px; font-weight: bold;">Select Sequence Region:</span>
+                <div class="d-flex flex-wrap align-items-center">
+                  <div class="mr-3 mb-1">
+                    <input name="region" type="radio" checked id="sequence_VH" value="sequence_VH">
+                    <label for="sequence_VH" class="mb-0"><span style="font-weight: bold; cursor: pointer;">VH</span></label>
+                  </div>
+                  <div class="mr-3 mb-1">
+                    <input name="region" type="radio" id="sequence_VL" value="sequence_VL">
+                    <label for="sequence_VL" class="mb-0"><span style="font-weight: bold; cursor: pointer;">VL</span></label>
+                  </div>
+                  <div class="mr-3 mb-1">
+                    <input name="region" type="radio" id="sequence_Fv" value="sequence_Fv">
+                    <label for="sequence_Fv" class="mb-0"><span style="font-weight: bold; cursor: pointer;">Fv</span></label>
+                  </div>
+                  <div class="mr-3 mb-1">
+                    <input name="region" type="radio" id="sequence_Fab" value="sequence_Fab">
+                    <label for="sequence_Fab" class="mb-0"><span style="font-weight: bold; cursor: pointer;">Fab</span></label>
+                  </div>
+                  <div class="mr-3 mb-1">
+                    <input name="region" type="radio" id="sequence_FabH" value="sequence_FabH">
+                    <label for="sequence_FabH" class="mb-0"><span style="font-weight: bold; cursor: pointer;">FabH</span></label>
+                  </div>
+                  <div class="mr-3 mb-1">
+                    <input name="region" type="radio" id="sequence_FabL" value="sequence_FabL">
+                    <label for="sequence_FabL" class="mb-0"><span style="font-weight: bold; cursor: pointer;">FabL</span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 输入区域 -->
+            <div class="form-group pl-4 pr-4">
+              <label for="sequenceInput" class="d-block">
+                <strong>Input your protein sequence in FASTA format:</strong>
+                <button type="button" class="btn btn-link btn-sm p-0 ml-2 align-baseline" onclick="insertExample()" style="font-size: 0.9rem;"># Example sequence</button>
+              </label>
+              <textarea class="form-control" id="sequenceInput" name="sequence" rows="6" style="margin-top: 10px; border: 1px solid #ccc;">{{ query }}</textarea>
+            </div>
+
+            <!-- 修改后的提交按钮 - 居中 -->
+            <div class="text-center mt-3">
+              <button type="submit" class="btn" style="font-weight: bold; background-color: #003366; color: white;">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="custom-panel-heading" name="panel_head">Similarity Search Result</div>
+                    <div class="container mt-4 mb-4">
+
+                        <div class="card-body" style="font-size: 20px; padding-top: 0.7rem;">
+                            {% if has_searched %}
+                                {% if error %}
+                                    <div class="alert alert-info">{{ error }}</div>
+                                {% elif results %}
+                                    <table class="table table-bordered custom-table align-middle" style="table-layout: fixed;">
+                                        <thead>
+                                            <tr>
+                                                <th style="background-color: #d9edf7; text-align: center;width: 10%;">ID</th>
+                                                <th style="background-color: #d9edf7; text-align: center;width: 20%;">Name</th>
+                                                <th style="background-color: #d9edf7; text-align: center;width: 25%;">Region</th>
+                                                <th style="background-color: #d9edf7; text-align: center;width: 15%;">Alignment Score</th>
+                                                <th style="background-color: #d8edf7; text-align: center;width: 15%;">Identity (%)</th>
+                                                <th style="background-color: #d8edf7; text-align: center;width: 15%;">Coverage (%)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for result in results %}
+                                                <tr>
+                                                    <td><a href="{% url 'blog:antibody_detail' result.id_db %}">{{ result.id_db }}</a></td>
+                                                    <td>{{ result.antibody }}</td>
+                                                    <td>{{ result.region }}</td>
+                                                    <td>{{ result.score }}</td>
+                                                    <td>{{ result.identity }}</td>
+                                                    <td>{{ result.coverage }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% else %}
+                                    <div class="alert alert-info">No antibody found.</div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  function insertExample() {
+    const example = `>Example sequence
+          QVQLVESGGGLVQPGGSLRLSCAASGFTFSSYAMSWVRQAPGKGLEWVSAISGSGGSTYYADSVKGRFTISRDNSKNTLYLQMNSLRAEDTAVYYCARGDSSGYYYGMDVWGQGTTVTVSS`;
+    document.getElementById("sequenceInput").value = example;
+  }
+</script>
+
+<script>
+function validateForm() {
+    const sequence = document.getElementById('sequenceInput').value.trim();
+    const region = document.querySelector('input[name="region"]:checked');
+
+    if (!sequence) {
+        alert("请输入序列！");
+        return false; // 阻止表单提交
+    }
+
+    if (!region) {
+        alert("请选择一个序列区域！");
+        return false; // 阻止表单提交
+    }
+
+    return true; // 允许提交
+}
+</script>
+
+
+
+{% endblock %}

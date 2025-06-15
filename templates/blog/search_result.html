@@ -1,17 +1,42 @@
 {% extends 'base.html' %}
 
 
-{% block main %}
+{% block search %}
+
 <!--Search form-->
-<form method="get" action="{% url 'blog:antibody_search' %}" class="search-form mx-auto" style="width: 50%; margin: 0 auto; padding-top: 20px;" >
-    <div class="input-group">
-        <input type="text" class="form-control" style=" border-radius: 5px; border: 1px solid rgb(139, 153, 163); " placeholder="Search for an antibody..." name="q" value="{{ query }}">
-        <button class="input-group-append">
-            <i class="fas fa-search" style="font-size: 1.2rem; color: white;"></i>
-        </button><!-- 替换为搜索图标 -->
-        </div>
+<form method="get" action="{% url 'blog:antibody_search' %}" style="max-width: 600px; margin: 0 auto; padding: 20px 0;">
+    <div style="display: flex; border: 1px solid #ccc; border-radius: 6px; overflow: hidden;">
+        <!-- 下拉框 -->
+        <select name="type" 
+            style="
+                border: none;
+                padding: 8px 12px;
+                font-size: 16px;
+                background-color: white;
+                border-right: 1px solid rgba(157, 169, 179, 0.52); 
+                outline: none;
+            ">
+            <option value="name" {% if request.GET.type == "name" %}selected{% endif %}>Name</option>
+            <option value="property" {% if request.GET.type == "property" %}selected{% endif %}>Property</option>
+        </select>
+
+        <!-- 输入框 -->
+        <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search antibodies..." 
+               style="flex: 1; border: none; padding: 8px 12px; font-size: 16px; outline: none;">
+
+        <!-- 按钮 -->
+        <button type="submit" style="background-color: #1b4b8a; border: none; padding: 0 16px; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-search" style="color: white; font-size: 16px;"></i>
+        </button>
     </div>
 </form>
+
+
+
+
+{% endblock search %}
+
+{% block main %}
 
 <!-- Search Start -->
 <div class="container" style="height: auto !important; min-height: 622px;">
@@ -54,21 +79,18 @@
                                         <td style="padding: 8px;border: 1px solid #ddd;">
                                           {% if search_type == "name" %}
                                             <!-- 按名字搜索时，显示所有性质 -->
-                                            {% for property in antibody.properties %}
-                                                {{ property }}{% if not forloop.last %},{% endif %}<br>
+                                            {% for property in antibody.property_list.all %}
+                                                {{ property.property_name }}: {{ property.value }}<br>
                                             {% endfor %}
                                           {% else %}
-                                            {% if query in antibody.property_keys %}
-                                                {% for key, value in antibody.properties.items %}
-                                                  {% if query in key %}
-                                                    {{ key }}: {{ value }}<br>
-                                                  {% endif %}
-                                              
-                                                {% endfor %}
-                                            {% endif %}
+                                            {% for property in antibody.property_list.all %}
+                                              {% if query in property.property_name %}
+                                                {{ property.property_name }}: {{ property.value }}<br>
+                                              {% endif %}
+                                            {% endfor %}
                                           {% endif %}
                                         </td>
-                                        <td style="padding: 8px;border: 1px solid #ddd;">{{ antibody.reference }}<br><a href="https://doi.org/{{ antibody.doi }}" target="_blank">{{ antibody.doi }}</a></td>
+                                        <td style="padding: 8px;border: 1px solid #ddd;">{{ antibody.paper }}<br><a href="https://doi.org/{{ antibody.doi }}" target="_blank">{{ antibody.doi }}</a></td>
                                     </tr>
                                     {% empty %}
                                         <li>No antibodies found.</li>
@@ -137,3 +159,6 @@
 
 
 {% endblock main %}
+
+
+

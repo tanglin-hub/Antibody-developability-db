@@ -1,20 +1,78 @@
 {% extends 'base.html'%}
-
+{% load static%}
 {% block main %}
-<style>
-        /* 设置页面整体高度 */
-        html, body {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-        }
-</style>
-<html>
-    <body>
-        <p>页面正在开发中<p>
-    </body>
-</html>
-
-
+<div class="container">
+    <div class="row  mt-4">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="custom-panel-heading" name="panel_head">Search</div>
+                <div class="panel-body about_content">
+                    <div class="pull-left text-justify">
+                        <p>
+                        <strong>Text-based search: </strong>First, select which dataset to search.
+                        Then, enter your antibody name, or property name.
+                        If the search is empty, we will return all
+                         the antibody information.
+                        </p>
+                        <div style="text-align: center; margin-top: 10px;">
+                            <img src="{% static 'blog/images/search.png' %}"  class="img-fluid" alt="Search image" style="max-width: 80%; height: auto;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- col -->
+    </div> <!-- row -->
+     <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="custom-panel-heading" name="panel_head">Search Results</div>
+                <div class="panel-body about_content">
+                    <div class="pull-left text-justify">
+                        <p><strong>The search resulte list:</strong></p>
+                        <p><strong>1.Search by name:</strong>If you search for antibodies'  name, all the physicochemical 
+                        property information contained in this antibody will appear.</p>
+                        <p><strong>2.Search by property:</strong>If you search for physicochemical properties, all the antibodies and the specific data of this property 
+                        will appear instead of the complete physicochemical property information. </p>
+                        <p><strong>3.Download:</strong>On the search list page, we provide all the information about the target search. 
+                        Click to download all the antibody information of the target search. </p>
+                        <div style="text-align: center; margin-top: 10px;">
+                            <img src="{% static 'blog/images/search.png' %}"  class="img-fluid" alt="Search image" style="max-width: 80%; height: auto;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- col -->
+    </div> <!-- row -->
+     <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="custom-panel-heading" name="panel_head">Antibody Detail</div>
+                <div class="panel-body about_content">
+                    <div class="pull-left text-justify">
+                        <p><strong>1.Antibody visualization:</strong>A 3Dmol.js-enabled visualization window shows
+                            The three-dimensional structure information of antibodies can be displayed through methods such as cartoon 
+                            below.
+                            Action Options: Rotate: Press and hold the left mouse button. Zoom: Use mouse's scroll button. 
+                        </p>
+                        <p>
+                            <strong>2.Download:</strong>On the search details page, we offer download options for individual antibodies. You can choose to download the sequence of the antibody in fasta 
+                            format or all the information about this antibody.
+                        </p>
+                        <p>
+                            <strong>3.Basic information:</strong>Here, the unique ID of the included antibody in the DevoAb database, AB0001, is displayed. In addition, the literature source of the antibody (click to jump to the corresponding literature), display format, 
+                            and sequence information are also shown.
+                        </p>
+                        <p>
+                            <strong>4.Peoperties:</strong>Presents all the information on the developability 
+                            properties of the antibody as experimentally determined.
+                        </p><br>
+                        <div style="text-align: center; margin-top: 10px;">
+                            <img src="{% static 'blog/images/search.png' %}"  class="img-fluid" alt="Search image" style="max-width: 80%; height: auto;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- col -->
+    </div> <!-- row -->
+</div> <!-- container -->
 {% endblock main %}

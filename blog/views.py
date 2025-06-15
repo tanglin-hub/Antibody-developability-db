@@ -1,5 +1,5 @@
 from django.shortcuts import render,get_object_or_404
-from .models import Antibody
+from .models import Antibody,AntibodyProperty
 from django.http import JsonResponse,HttpResponse
 import csv,json
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
@@ -7,6 +7,9 @@ from .download import download_results
 import os
 from django.conf import settings
 from urllib.parse import urljoin
+from Bio.Align import PairwiseAligner
+import logging
+from collections import defaultdict
 
 # Create your views here.
 def index(request):
@@ -29,11 +32,7 @@ def antibody_search(request):
             
         else:
         # 匹配抗体性质部分（基于 property_keys 字段）
-            all_antibodies = Antibody.objects.all()
-            antibodies = [
-                ab for ab in all_antibodies
-                if ab.properties and any(query.lower() in key.lower() for key in ab.properties.keys())
-            ]
+            antibodies = Antibody.objects.filter(property_list__property_name__icontains=query).distinct()
             print(f"Searching by property: {query}")
             
 
@@ -46,13 +45,17 @@ def antibody_search(request):
     results=[]
     
     for antibody in antibodies: 
+        
+        antibody.filtered_properties = [p for p in antibody.property_list.all() if not p.property_name.lower().startswith("assay")]
+
         results.append({
             'id': antibody.id_db,
             'date':antibody.date,
             'name': antibody.name,
-            'reference': antibody.reference,
+            'paper':antibody.paper,
             'doi': antibody.doi,
-            'properties': antibody.property_keys,
+            
+            'antibody.filtered_properties':antibody.filtered_properties,
         })
     
      # **处理下载请求**
@@ -101,8 +104,9 @@ def contact(request):
 
 def antibody_detail(request,id_db):
     antibody=get_object_or_404(Antibody, id_db=id_db)
-    sequence = antibody.sequence
+    sequence= antibody.sequence
     pdb_url = None
+    properties = antibody.property_list.all() 
  
     # PDB 结构缓存路径
     pdb_filename = f"{id_db}_tfold_ab.pdb"
@@ -114,6 +118,7 @@ def antibody_detail(request,id_db):
     return render(request, 'blog/antibody_detail.html',{
         'antibody':antibody,
         'pdb_url': pdb_url,
+        'properties': properties,
     })
 
 
@@ -128,6 +133,10 @@ def download_all (request, id_db):
     # 写入抗体的基本信息
     writer.writerow(['ID',antibody.id_db])
     writer.writerow(['Name',antibody.name])
+    writer.writerow(['Name',antibody.format])
+    writer.writerow(['Name',antibody.other_id])
+    writer.writerow(['Name',antibody.organism])
+    writer.writerow(['Name',antibody.paper])
     writer.writerow(['Reference', antibody.reference])
     writer.writerow(['DOI', antibody.doi])
     writer.writerow(['Sequence', ''])
@@ -138,14 +147,13 @@ def download_all (request, id_db):
     else:
         writer.writerow("No sequence data available.")
     writer.writerow(['Properties', ''])
-    if antibody.properties:
-        if isinstance(antibody.properties, dict):  # 处理 JSON 数据
-            for key, value in antibody.properties.items():
-                writer.writerow([key, value])
+    property_list = antibody.property_list.all()
+    if property_list.exists():
+        writer.writerow(['Property Name', 'Value', 'Assay'])
+        for prop in property_list:
+            writer.writerow([prop.property_name, prop.value, prop.assay or ''])
     else:
         writer.writerow(['No properties data available'])
-
-    return response
 
 def download_sequence(request, id_db):
     antibody = Antibody.objects.get(id_db=id_db)
@@ -175,4 +183,89 @@ def check_pdb(request, id_db):
         return HttpResponse(f"PDB file for {id_db} NOT found.")
     
 
-    
+
+logger = logging.getLogger(__name__)
+
+# 指定用于比对的区域字段
+VARIABLE_REGIONS = [
+    "sequence_VH", "sequence_VL",
+    "sequence_Fv", "sequence-Fab", "sequence_FabH", "sequence_FabL"
+]
+
+def compare_sequences(query_seq, db_seq):
+    if not query_seq or not db_seq:
+        return {'score': 0.0, 'identity': 0.0, 'coverage': 0.0, }
+    aligner = PairwiseAligner()
+    aligner.mode = 'global'
+    alignment = aligner.align(query_seq, db_seq)[0]
+
+    aligned_query = alignment.aligned[0]
+    matches = sum(e2 - e1 for (e1, e2) in aligned_query)
+    total_length = max(len(query_seq), len(db_seq))
+
+    identity = matches / total_length * 100
+    coverage = matches / len(query_seq) * 100
+    score = alignment.score / total_length
+
+    return {
+        'score': round(score, 3),
+        'identity': round(identity, 2),
+        'coverage': round(coverage, 2)
+    }
+
+def sequence_similarity(request):
+    if request.method == "POST":
+        try:
+            user_seq = request.POST.get("sequence", "").strip().upper()
+            region = request.POST.get("region", "").strip()
+
+            if not user_seq or not region:
+                return render(request, "blog/sequence_search.html", {
+                    "error": "Please enter sequence and select region.",
+                    "query": user_seq,
+                    "region": region,
+                    "has_searched": True,
+                })
+
+            results = []
+            for ab in Antibody.objects.all():
+                seq_dict = ab.sequence or {}
+                db_seq = seq_dict.get(region)
+                if db_seq:
+                    db_seq = db_seq.upper()
+                    metrics = compare_sequences(user_seq, db_seq)
+                    if metrics["score"] > 0.5:
+                        results.append({
+                            "id_db": ab.id_db,
+                            "antibody": ab.name,
+                            "region": region,
+                            "score": round(metrics["score"] * 100, 2),
+                            "identity": round(metrics["identity"], 2),
+                            "coverage": round(metrics["coverage"], 2),
+                        })
+
+            results.sort(key=lambda x: x["score"], reverse=True)
+
+            if not results:
+                return render(request, "blog/sequence_search.html", {
+                    "error": "No antibody found.",
+                    "query": user_seq,
+                    "region": region,
+                    "has_searched": True,
+                })
+
+            return render(request, "blog/sequence_search.html", {
+                "results": results,
+                "query": user_seq,
+                "region": region,
+                "has_searched": True,
+            })
+
+        except Exception:
+            return render(request, "blog/sequence_search.html", {
+                "error": "An internal error occurred. Please try again later.",
+                "has_searched": True,
+            })
+
+    # GET 请求：没有查询过
+    return render(request, "blog/sequence_search.html", {"has_searched": False})

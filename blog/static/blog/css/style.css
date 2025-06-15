@@ -7,7 +7,7 @@
   }
   
 body {
-  font-family: Arial, sans-serif;
+  font-family: Helvetica Neue, sans-serif;
   line-height: 1.6;
   color: #333333;
   display: grid;
@@ -107,50 +107,7 @@ header {
     padding: 0;
     background-color: #f4f9fc;
   }
-                                                                                                                                                                                                     
-  
-  
-  .feedback {
-    text-align: center;
-  }
-  
-  .feedback h2 {
-    margin-bottom: 10px;
-  }
-  
-  .feedback form {
-    max-width: 600px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .feedback input,
-  .feedback textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-family: Arial, sans-serif; /* 设置相同的字体 */
-    font-size: 16px; /* 设置字体大小 */
-    line-height: 1.5; /* 设置行高 */
-    color: #333; /* 设置字体颜色 */
-  }
-  
-  .feedback button {
-    padding: 10px 20px;
-    border: none;
-    background-color: hsl(216, 87%, 41%);
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .feedback button:hover {
-    background-color: #003366;
-  }
-  
+   
   footer {
     text-align: center;
     background-color: hsl(211, 41%, 41%);
@@ -206,7 +163,7 @@ button {
 
 .navbar-brand {
     font-size: 28px;
-    color: #074d76;
+    padding: 0.5rem 1rem;
     height: auto;
     float: left;
 }
@@ -229,14 +186,13 @@ button {
 
 
 .navbar {
-    background-color: hsl(0, 0%, 100%); /* 设置导航栏背景色 */
-    border-bottom: 2px solid hsl(0, 0%, 0%); /* 添加分隔线 */
+    background-color: #003366; /* 设置导航栏背景色 */
     padding: .5rem 10px;
     font-size: 16px;
     color: #333; /* 导航项颜色 */
     font-weight: bold;
     transition: color 0.3s;
-    color: #15e4d0;
+    color: #04327e;
 }
 
 .nav-link {
@@ -267,13 +223,13 @@ button {
 
 .navbar ul li a {
   text-decoration: none; /* 去掉下划线 */
-  color: #0073b7; /* 设置字体颜色 */
+  color: #ffffff; /* 设置字体颜色 */
   font-weight: bold;
   transition: color 0.3s ease;
 }
 
 .navbar ul li a:hover {
-  color: #13b921; /* 悬停时颜色变化 */
+  color: #c5e9e3; /* 悬停时颜色变化 */
 }
 
 .search-section {
@@ -402,7 +358,92 @@ button {
 }
 
 .custom-select {
-        max-width: 140px; /* 控制下拉框宽度 */
-        height: 50px;
-    }
-    
+  max-width: 140px; /* 控制下拉框宽度 */
+  height: 50px;
+ }
+
+.panel-default{
+  border: 1px solid #cccccc;  /* 灰色细边框 */
+  border-radius: 6px;         /* 圆角，美观 */
+  margin: 30px 0 30px 0;               
+  background-color: #ffffff;  /* 白色背景，防止和外部混 */
+  overflow: hidden;
+}
+
+.panel-body {
+  padding: 20px;
+}
+
+
+.custom-panel-heading {
+  background-color: #0a3a6a;  /* Bootstrap dark */
+  color: white;
+  font-weight: bold ;
+  font-size: 20px; 
+  padding: 10px 30px;
+  border-radius: 5px 5px 0 0;
+}
+
+p {
+  text-indent: 2em;
+  font-size: 18px;
+  margin-bottom: 0;
+}
+
+.p-list {
+  font-size: 18px;   /* 字体大小 */
+  font-weight: bold; /* 加粗 */
+  margin-top: 10px;
+  line-height: 1.5;  /* 行间距，稍微松一点 */
+  padding-left: 4em; /* 整体缩进 */
+  color:#0073b7;
+  list-style-type: disc;
+}
+
+.p-list li {
+  margin-bottom: 8px; /* 每项间距 */
+}
+
+.p-list .li-desc {
+  font-weight: normal;   /* 不加粗 */
+  color: #333333;        /* 稍浅 */
+  margin-left: 6px;      /* 稍微离开冒号一点 */
+}
+
+.custom-table {
+  width: 90%;
+  margin: 0 auto;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 14px;
+}
+
+.custom-table th,
+.custom-table td {
+  padding: 4px;
+  font-weight: 500;
+  border: none;
+}
+
+/* 表头上下边框 + 背景色 */
+.custom-table thead th {
+  font-weight: bold;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  background-color: whitesmoke;
+}
+
+/* 最后一行底部边框 */
+.custom-table tbody tr:last-child td {
+  border-bottom: 1px solid black;
+}
+
+/* 分类单元格样式（第一列 td） */
+.custom-table td.category-cell {
+  border-bottom: 1px solid black;
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+.custom-table .group-end td {
+  border-bottom: 1px solid black;
+}

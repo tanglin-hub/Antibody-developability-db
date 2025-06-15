@@ -1,22 +1,49 @@
 {% extends 'base.html'%}
+{% load string_fliters %}
 
-{% block main %}
+{% block search %}
+
 <!--Search form-->
-<form method="get" action="{% url 'blog:antibody_search' %}" class="search-form mx-auto" style="width: 50%; margin: 0 auto; padding-top: 20px;" >
-    <div class="input-group">
-        <input type="text" class="form-control" style="  border-radius: 0; border: 1px solid #ced4da; " placeholder="Search for an antibody..." name="q" value="{{ query }}">
-        <button class="input-group-append">
-            <i class="fas fa-search" style="font-size: 1.2rem; color: white;"></i>
-        </button><!-- 替换为搜索图标 -->
-        </div>
+<form method="get" action="{% url 'blog:antibody_search' %}" style="max-width: 600px; margin: 0 auto; padding: 20px 0;">
+    <div style="display: flex; border: 1px solid #ccc; border-radius: 6px; overflow: hidden;">
+        <!-- 下拉框 -->
+        <select name="type" 
+            style="
+                border: none;
+                padding: 8px 12px;
+                font-size: 16px;
+                background-color: white;
+                border-right: 1px solid rgba(157, 169, 179, 0.52); 
+                outline: none;
+            ">
+            <option value="name" {% if request.GET.type == "name" %}selected{% endif %}>Name</option>
+            <option value="property" {% if request.GET.type == "property" %}selected{% endif %}>Property</option>
+        </select>
+
+        <!-- 输入框 -->
+        <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search antibodies..." 
+               style="flex: 1; border: none; padding: 8px 12px; font-size: 16px; outline: none;">
+
+        <!-- 按钮 -->
+        <button type="submit" style="background-color: #1b4b8a; border: none; padding: 0 16px; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-search" style="color: white; font-size: 16px;"></i>
+        </button>
     </div>
 </form>
+
+
+
+
+{% endblock search %}
+
+{% block main %}
+
 
 <div class="container">
     <div class="block" id="information1">
         <table class="table" style="margin-bottom: 0px">
             <tr>
-                <td style="font-size: 32px; font-weight: 500; color: #28a745; width: 1280px; word-break: break-all; word-wrap: break-word;  border-top: 0px white">{{ antibody.name}} </td> 
+                
             </tr>
         </table>  
             <div class="row">
@@ -34,10 +61,10 @@
                                         </div>
                                 </div>
                         </div>
-                        <h2 style="text-align: center; font-family: sans-serif;">3D Antibody Structure</h2>
+                        <h2 style="text-align: center; font-family: sans-serif; margin-top:10px; ">{{ antibody.name}}</h2>
 
                            <!-- 外框容器 -->
-                            <div style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
+                            <div style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">
                                 
                                 <!-- 可视化区域框框 -->
                                 <div style="border: 2px solid #ccc; border-radius: 16px; padding: 8px; width: 60%; max-width: 700px;">
@@ -67,38 +94,74 @@
                             </style>
                             
                             <div style="text-align: center; margin-top: 12px;">
-                                <button class="style-btn" onclick="setStyleSimple({ cartoon: { color: 'spectrum' } })">Cartoon</button>
-                                <button class="style-btn" onclick="setStyleSimple({ stick: {} })">Stick</button>
-                                <button class="style-btn" onclick="setStyleSimple({ sphere: {} })">Sphere</button>
-                                <button class="style-btn" onclick="setStyleSimple({ line: {} })">Line</button>
+                                <button class="style-btn" onclick="setCartoon()">Cartoon</button>
+                                <button class="style-btn" onclick="setStick()">Stick</button>
+                                <button class="style-btn" onclick="setSphere()">Sphere</button>
+                                <button class="style-btn" onclick="setLine()">Line</button>
                             </div>
+
 
 
                             <!-- 加载 3Dmol -->
                             <script src="https://cdn.jsdelivr.net/npm/3dmol@1.6.0/build/3Dmol-min.js"></script>
-                            <script>
-                                const viewer_simple = $3Dmol.createViewer("viewer_simple", {
-                                    defaultcolors: $3Dmol.rasmolElementColors,
-                                    backgroundColor: "white"
-                                });
-                                fetch("{{ pdb_url }}")  // 可以换成你当前抗体的实际路径
-                                    .then(response => response.text())
-                                    .then(pdbData => {
-                                        viewer_simple.addModel(pdbData, "pdb");
-                                        viewer_simple.setStyle({}, { cartoon: { color: "spectrum" } });
-                                        viewer_simple.zoomTo();
-                                        viewer_simple.render();
+                           <script>
+                                let viewer_simple = null;
+
+                                async function loadPDBAndInit() {
+                                    const response = await fetch("{{ pdb_url }}");
+                                    const pdbData = await response.text();
+
+                                    viewer_simple = $3Dmol.createViewer("viewer_simple", {
+                                        defaultcolors: $3Dmol.rasmolElementColors,
+                                        backgroundColor: "white"
                                     });
 
-                                function setStyleSimple(style) {
-                                    viewer_simple.setStyle({}, style);
+                                    viewer_simple.addModel(pdbData, "pdb");
+                                    viewer_simple.zoomTo();
+                                    
+                                    // 页面加载时默认显示 cartoon 样式
+                                    setCartoon();
+                                }
+
+                                function setCartoon() {
+                                    if (!viewer_simple) return;
+                                    viewer_simple.setStyle({}, {});  // 清空当前样式
+                                    viewer_simple.setStyle({chain: 'H'}, {cartoon: {color: '#ff0000'}});
+                                    viewer_simple.setStyle({chain: 'L'}, {cartoon: {color: '#0000ff'}});
+                                    viewer_simple.setStyle({chain: 'A'}, {cartoon: {color: 'green'}});
+                                    viewer_simple.setStyle({chain: 'B'}, {cartoon: {color: 'orange'}});
                                     viewer_simple.zoomTo();
                                     viewer_simple.render();
                                 }
 
-                                
+                                function setStick() {
+                                    if (!viewer_simple) return;
+                                    viewer_simple.setStyle({}, {stick: {}});
+                                    viewer_simple.zoomTo();
+                                    viewer_simple.render();
+                                }
+
+                                function setSphere() {
+                                    if (!viewer_simple) return;
+                                    viewer_simple.setStyle({}, {sphere: {}});
+                                    viewer_simple.zoomTo();
+                                    viewer_simple.render();
+                                }
+
+                                function setLine() {
+                                    if (!viewer_simple) return;
+                                    viewer_simple.setStyle({}, {line: {}});
+                                    viewer_simple.zoomTo();
+                                    viewer_simple.render();
+                                }
+
+                                //  页面加载时执行初始化
+                                loadPDBAndInit();
                             </script>
-                     
+
+                            
+                            
+                            
 
                         <div class="card-body" style="font-size: 18px; padding-bottom: 0px">
                             <table class="table table-striped" style="color: #20212b; width: 100%; table-layout: fixed; word-break: break-all; word-wrap: break-word">
@@ -108,6 +171,24 @@
                                     <td style="width:80%; padding-top: 10px; padding-bottom: 2px; padding-left: 6px">
                                         {{antibody.id_db}}</td>
                                 </tr>
+                                 <tr>
+                                    <th style="width:20%; padding-top: 10px; padding-bottom: 2px; padding-left: 6px">
+                                        Format:</th>
+                                    <td style="width:80%; padding-top: 10px; padding-bottom: 2px; padding-left: 6px">
+                                        {{antibody.format}}</td>
+                                </tr>
+                                <tr>
+                                    <th style="width:20%; padding-top: 10px; padding-bottom: 2px; padding-left: 6px">
+                                        Organism:</th>
+                                    <td style="width:80%; padding-top: 10px; padding-bottom: 2px; padding-left: 6px">
+                                        {{antibody.organism}}</td>
+                                </tr>
+                                <tr>
+                                    <th style="width:20%; padding-top: 10px; padding-bottom: 2px; padding-left: 6px">
+                                        Paper:</th>
+                                    <td style="width:80%; padding-top: 10px; padding-bottom: 2px; padding-left: 6px">
+                                        {{antibody.paper}} doi:<a href="https://doi.org/{{ antibody.doi }}" target="_blank">{{ antibody.doi }}</a></td>
+                                </tr>
                                 <tr>
                                     <th style="width:20%; padding-top: 10px; padding-bottom: 2px; padding-left: 6px">
                                         Reference:</th>
@@ -116,10 +197,25 @@
                                 </tr>
                                 <tr>
                                     <th style="width:20%; padding-top: 10px; padding-bottom: 2px; padding-left: 6px">
-                                        Reference DOI:</th>
+                                        Other_ID:</th>
                                     <td style="width:80%; padding-top: 10px; padding-bottom: 2px; padding-left: 6px">
-                                        {{antibody.doi}}</td>
+                                        {% with antibody.other_id|split_ids as id_data %}
+                                        {% if id_data.type == "PDB" %}
+                                            {% for pid in id_data.ids %}
+                                                <a href="https://www.rcsb.org/structure/{{ pid }}" target="_blank">{{ id_data.type }}:{{ pid }}</a>{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}
+                                        {% elif id_data.type == "EMBL Genbank" %}
+                                            {% for eid in id_data.ids %}
+                                                <a href="https://www.ebi.ac.uk/ena/browser/view/{{ eid }}" target="_blank">{{ id_data.type }}:{{ eid }}</a>{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}
+                                         {% else %}
+                                            None
+                                        {% endif %}
+                                    {% endwith %}
+                                    </td>
                                 </tr>
+    
+
                                 
                                 {% for region, seq in antibody.sequence.items %}
                                     <tr>
@@ -141,15 +237,20 @@
                             <div class="card-body" style="font-size: 18px; padding-bottom: 0px">
                                 <table class="table table-striped" style="color: #20212b; margin-bottom: 3px">
                                     <tr>
-                                        <th style="padding: 6px, width:60%">Property</th>
-                                        <th style="padding: 6px, width:40%">Value</th>
+                                        <th style="padding: 6px; width:45%">Property</th>
+                                        <th style="padding: 6px; width:25%">Value</th>
+                                         <th style="padding: 6px; width:30%"></th>
+
                                     </tr>
-                                    {% for key, value in antibody.properties.items %}
+                                    {% for item in antibody.property_list.all %}
                                         <tr>
-                                            <th style="padding: 6px; font-weight: 500, width:60%">{{ key }}</th>
-                                            <td style="padding: 6px; font-weight: 500, width:40%">{{ value }}</td>
+                                            <td style="padding: 6px; font-weight: 500;">{{ item.property_name }}</td>
+                                            <td style="padding: 6px; font-weight: 500;">{{ item.value }}</td>
+                                            <td style="padding: 6px; font-weight: 500;">
+                                                {% if item.assay %}{{ item.assay }}{% else %} {% endif %}
+                                            </td>
                                         </tr>
-                                    {% endfor %}                    
+                                    {% endfor %}
                                 </table>
                             </div>
                     </div>
